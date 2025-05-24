@@ -86,6 +86,7 @@
             buttonThem.TabIndex = 6;
             buttonThem.Text = "THÊM";
             buttonThem.UseVisualStyleBackColor = true;
+            buttonThem.Click += buttonThem_Click;
             // 
             // label4
             // 
@@ -172,6 +173,7 @@
             buttonXoa.TabIndex = 1;
             buttonXoa.Text = "XÓA";
             buttonXoa.UseVisualStyleBackColor = true;
+            buttonXoa.Click += buttonXoa_Click;
             // 
             // buttonHuy
             // 
@@ -182,6 +184,7 @@
             buttonHuy.Text = "HỦY";
             buttonHuy.UseVisualStyleBackColor = true;
             buttonHuy.Visible = false;
+            buttonHuy.Click += buttonHuy_Click;
             // 
             // buttonSua
             // 
@@ -192,6 +195,7 @@
             buttonSua.TabIndex = 2;
             buttonSua.Text = "SỬA";
             buttonSua.UseVisualStyleBackColor = true;
+            buttonSua.Click += buttonSua_Click;
             // 
             // buttonXacNhan
             // 
@@ -203,6 +207,7 @@
             buttonXacNhan.Text = "XÁC NHẬN";
             buttonXacNhan.UseVisualStyleBackColor = true;
             buttonXacNhan.Visible = false;
+            buttonXacNhan.Click += buttonXacNhan_Click;
             // 
             // tableLayoutPanel
             // 

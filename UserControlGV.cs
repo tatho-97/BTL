@@ -12,9 +12,175 @@ namespace BTL
 {
     public partial class UserControlGV : UserControl
     {
+        private readonly Database _db = new();
+        private DataTable _dtGV = new();
+        private DataView _viewGV;
+        private DataTable _dtKhoa, _dtMon;
+        private enum Mode { View, Add, Edit }
+        private Mode _mode = Mode.View;
+
         public UserControlGV()
         {
             InitializeComponent();
+            Load += UserControlGV_Load;
+        }
+
+        private void UserControlGV_Load(object? s, EventArgs e)
+        {
+            // -- KHOA
+            _dtKhoa = _db.GetAllKhoa();
+            comboBox1.DisplayMember = "TenKhoa";
+            comboBox1.ValueMember = "MaKhoa";
+            comboBox1.DataSource = _dtKhoa;
+            comboBox1.SelectedIndexChanged += ComboBoxKhoaChanged;
+
+            // -- GIẢNG VIÊN
+            _dtGV = _db.GetAllGiangVien();
+            _viewGV = _dtGV.DefaultView;
+            dataGridView.DataSource = _viewGV;
+            dataGridView.SelectionChanged += DataGridView_SelectionChanged;
+
+            // -- TÌM KIẾM
+            buttonSearch.Click += ButtonSearch_Click;
+            textBoxSearch.TextChanged += ButtonSearch_Click;
+
+            // -- NÚT CRUD
+            //buttonThem.Click += ButtonThem_Click;
+            //buttonSua.Click += ButtonSua_Click;
+            //buttonXoa.Click += ButtonXoa_Click;
+            //buttonHuy.Click += ButtonHuy_Click;
+            //buttonXacNhan.Click += ButtonXacNhan_Click;
+
+            if (dataGridView.Rows.Count > 0)
+                DataGridView_SelectionChanged(null!, EventArgs.Empty);
+        }
+
+        private void ComboBoxKhoaChanged(object? s, EventArgs e)
+        {
+            if (comboBox1.SelectedValue == null) return;
+            string mk = comboBox1.SelectedValue.ToString()!;
+            _dtMon = _db.GetMonHocByKhoa(mk);
+            comboBox2.DisplayMember = "TenMH";
+            comboBox2.ValueMember = "MaMH";
+            comboBox2.DataSource = _dtMon;
+        }
+
+        private void DataGridView_SelectionChanged(object? s, EventArgs e)
+        {
+            if (dataGridView.CurrentRow == null) return;
+            var row = ((DataRowView)dataGridView.CurrentRow.DataBoundItem).Row;
+
+            textBoxMaSV.Text = row["MaGV"].ToString();
+            textBoxTenSV.Text = row["TenGV"].ToString();
+
+            comboBox1.SelectedValue = row["MaKhoa"];
+            // sự kiện selectedIndexChanged sẽ tự load môn
+            comboBox2.SelectedValue = row["MaMH"];
+
+            // Lớp giảng dạy
+            dataGridViewLH.DataSource =
+                _db.GetLopByGiangVien(row["MaGV"].ToString());
+        }
+
+        private void ButtonSearch_Click(object? s, EventArgs e)
+        {
+            string kw = textBoxSearch.Text.Replace("'", "''").Trim();
+            _viewGV.RowFilter = string.IsNullOrEmpty(kw)
+                ? ""
+                : $"MaGV LIKE '%{kw}%' OR TenGV LIKE '%{kw}%'";
+        }
+
+        private void RefreshGrid()
+        {
+            string filter = _viewGV.RowFilter;
+            _dtGV = _db.GetAllGiangVien();
+            _viewGV = new DataView(_dtGV) { RowFilter = filter };
+            dataGridView.DataSource = _viewGV;
+        }
+
+        private void SetEdit(bool enable)
+        {
+            textBoxTenSV.Enabled =
+            comboBox1.Enabled =
+            comboBox2.Enabled = enable;
+            textBoxMaSV.Enabled = (_mode == Mode.Add);
+        }
+
+        private void buttonThem_Click(object sender, EventArgs e)
+        {
+            _mode = Mode.Add;
+            ClearInput();
+            SetEdit(true);
+            ToggleButtons(editing: true);
+        }
+
+        private void buttonXoa_Click(object sender, EventArgs e)
+        {
+            if (dataGridView.CurrentRow == null) return;
+            string ma = textBoxMaSV.Text;
+            if (MessageBox.Show($"Xoá GV {ma} ?", "Xác nhận",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+            {
+                _db.DeleteGiangVien(ma);
+                RefreshGrid();
+            }
+        }
+
+        private void buttonHuy_Click(object sender, EventArgs e)
+        {
+            _mode = Mode.View;
+            SetEdit(false);
+            ToggleButtons(editing: false);
+            DataGridView_SelectionChanged(null!, EventArgs.Empty);
+        }
+
+        private void buttonXacNhan_Click(object sender, EventArgs e)
+        {
+            var gv = new GiangVien
+            {
+                MaGV = textBoxMaSV.Text.Trim(),
+                TenGV = textBoxTenSV.Text.Trim(),
+                MaKhoa = comboBox1.SelectedValue?.ToString(),
+                MaMH = comboBox2.SelectedValue?.ToString()
+            };
+
+            bool ok = false;
+
+            if (_mode == Mode.Add)
+            {
+                if (_db.ExistMaGV(gv.MaGV))
+                {
+                    MessageBox.Show("Mã giảng viên đã tồn tại!");
+                    textBoxMaSV.Focus(); return;
+                }
+                ok = _db.InsertGiangVien(gv);
+            }
+            else if (_mode == Mode.Edit)
+                ok = _db.UpdateGiangVien(gv);
+
+            MessageBox.Show(ok ? "Lưu thành công" : "Lỗi!");
+            buttonHuy_Click(null!, EventArgs.Empty);
+            RefreshGrid();
+        }
+
+        private void buttonSua_Click(object sender, EventArgs e)
+        {
+            if (dataGridView.CurrentRow == null) return;
+            _mode = Mode.Edit;
+            SetEdit(true);
+            ToggleButtons(editing: true);
+        }
+
+        private void ToggleButtons(bool editing)
+        {
+            buttonXacNhan.Visible = buttonHuy.Visible = editing;
+            buttonThem.Enabled = buttonSua.Enabled = buttonXoa.Enabled = !editing;
+            buttonThem.Visible = buttonSua.Visible = buttonXoa.Visible = !editing;
+        }
+        private void ClearInput()
+        {
+            textBoxMaSV.Clear(); textBoxTenSV.Clear();
+            comboBox1.SelectedIndex = 0;
         }
     }
 }

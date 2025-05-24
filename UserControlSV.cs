@@ -17,6 +17,8 @@ namespace BTL
         private DataTable _dtSinhVien = new();
         private DataView _viewSinhVien;          // <-- NEW
         private bool _binding = false;
+        private enum Mode { View, Add, Edit }
+        private Mode _mode = Mode.View;
 
         public UserControlSV()
         {
@@ -85,6 +87,137 @@ namespace BTL
             }
 
             // Khi kết quả lọc thay đổi → tự động cập nhật lưới
+            if (dataGridView.Rows.Count > 0)
+                DataGridView_SelectionChanged(null!, EventArgs.Empty);
+        }
+
+        private void SetEditMode(bool enable)
+        {
+            textBoxTenSV.Enabled =
+            textBoxDiaChi.Enabled =
+            dateTimePickerNgaySinh.Enabled =
+            radioButtonNam.Enabled =
+            radioButtonNu.Enabled =
+            comboBoxLop.Enabled = enable;
+
+            // MaSV chỉ cho phép nhập khi thêm mới
+            textBoxMaSV.Enabled = (_mode == Mode.Add);
+        }
+
+        // ==== SỰ KIỆN NÚT ============================================================
+
+        private void buttonThem_Click(object sender, EventArgs e)
+        {
+            _mode = Mode.Add;
+            ClearInput();
+            SetEditMode(true);
+
+            buttonXacNhan.Visible = buttonHuy.Visible = true;
+            buttonSua.Visible = buttonXoa.Visible = false;
+            buttonSua.Enabled = buttonXoa.Enabled = buttonThem.Enabled = false;
+        }
+
+        private void buttonSua_Click(object sender, EventArgs e)
+        {
+            if (dataGridView.CurrentRow == null) return;
+            _mode = Mode.Edit;
+            SetEditMode(true);
+
+            buttonXacNhan.Visible = buttonHuy.Visible = true;
+            buttonSua.Visible = buttonXoa.Visible = false;
+            dataGridView.Enabled = false;
+            buttonThem.Enabled = buttonXoa.Enabled = buttonSua.Enabled = false;
+        }
+
+        private void buttonHuy_Click(object sender, EventArgs e)
+        {
+            _mode = Mode.View;
+            SetEditMode(false);
+            buttonXacNhan.Visible = buttonHuy.Visible = false;
+            buttonSua.Visible = buttonXoa.Visible = true;
+            buttonThem.Enabled = buttonSua.Enabled = buttonXoa.Enabled = true;
+            dataGridView.Enabled = true;
+            // reload chọn dòng hiện tại
+            DataGridView_SelectionChanged(null!, EventArgs.Empty);
+        }
+
+        private void buttonXacNhan_Click(object sender, EventArgs e)
+        {
+            // gom dữ liệu từ form
+            var sv = new SinhVien
+            {
+                MaSV = textBoxMaSV.Text.Trim(),
+                TenSV = textBoxTenSV.Text.Trim(),
+                NgaySinh = dateTimePickerNgaySinh.Value.ToString("yyyy-MM-dd"),
+                GioiTinh = radioButtonNam.Checked ? "Nam" : "Nữ",
+                DiaChi = textBoxDiaChi.Text.Trim(),
+                MaLop = comboBoxLop.SelectedValue?.ToString()
+            };
+
+            bool ok = false;
+
+            if (_mode == Mode.Add)
+            {
+                if (_db.ExistMaSV(sv.MaSV))
+                {
+                    MessageBox.Show("Mã sinh viên đã tồn tại, hãy nhập mã khác!",
+                                    "Trùng khóa chính", MessageBoxButtons.OK,
+                                    MessageBoxIcon.Warning);
+                    textBoxMaSV.Focus();
+                    return;                     // STOP tại đây
+                }
+                ok = _db.InsertSinhVien(sv);
+            }
+            else if (_mode == Mode.Edit)
+            {
+                ok = _db.UpdateSinhVien(sv);
+            }
+
+            MessageBox.Show(ok ? "Lưu thành công!" : "Thao tác thất bại!");
+            buttonHuy_Click(null!, EventArgs.Empty);
+            RefreshSinhVienGrid();
+        }
+
+        private void buttonXoa_Click(object sender, EventArgs e)
+        {
+            if (dataGridView.CurrentRow == null) return;
+            string ma = textBoxMaSV.Text;
+
+            if (MessageBox.Show($"Xoá sinh viên {ma} ?", "Xác nhận",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+            {
+                bool ok = _db.DeleteSinhVien(ma);
+                MessageBox.Show(ok ? "Đã xoá!" : "Không xoá được!");
+                RefreshSinhVienGrid();
+            }
+        }
+
+        // ==== TIỆN ÍCH ==============================================================
+        private void ClearInput()
+        {
+            textBoxMaSV.Clear(); textBoxTenSV.Clear(); textBoxDiaChi.Clear();
+            dateTimePickerNgaySinh.Value = DateTime.Today;
+            radioButtonNam.Checked = true;
+            comboBoxLop.SelectedIndex = 0;
+        }
+
+        private void RefreshSinhVienGrid()
+        {
+            // 1) Ghi nhớ bộ lọc hiện tại (nếu có)
+            string filter = _viewSinhVien?.RowFilter ?? "";
+
+
+            // 2) Lấy dữ liệu mới
+            _dtSinhVien = _db.GetAllSinhVien();
+
+            // 3) Tạo DataView mới & áp dụng lại filter
+            _viewSinhVien = new DataView(_dtSinhVien);
+            _viewSinhVien.RowFilter = filter;
+
+            // 4) Bind trở lại lưới
+            dataGridView.DataSource = _viewSinhVien;
+
+            // 5) Chọn lại dòng đầu (tuỳ ý)
             if (dataGridView.Rows.Count > 0)
                 DataGridView_SelectionChanged(null!, EventArgs.Empty);
         }

@@ -3,20 +3,16 @@
   "WorkspaceRootPath": "C:\\Users\\duong\\OneDrive\\ANHTTT59(CLC)\\BTL\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{96F42B19-9C83-4AEE-AE72-4A0E81686AC8}|BTL.csproj|c:\\users\\duong\\onedrive\\anhttt59(clc)\\btl\\usercontrolsv.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{96F42B19-9C83-4AEE-AE72-4A0E81686AC8}|BTL.csproj|solutionrelative:usercontrolsv.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{96F42B19-9C83-4AEE-AE72-4A0E81686AC8}|BTL.csproj|c:\\users\\duong\\onedrive\\anhttt59(clc)\\btl\\usercontrolgv.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{96F42B19-9C83-4AEE-AE72-4A0E81686AC8}|BTL.csproj|solutionrelative:usercontrolgv.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{96F42B19-9C83-4AEE-AE72-4A0E81686AC8}|BTL.csproj|c:\\users\\duong\\onedrive\\anhttt59(clc)\\btl\\usercontrolsv.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{96F42B19-9C83-4AEE-AE72-4A0E81686AC8}|BTL.csproj|solutionrelative:usercontrolsv.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+      "AbsoluteMoniker": "D:0:0:{96F42B19-9C83-4AEE-AE72-4A0E81686AC8}|BTL.csproj|c:\\users\\duong\\onedrive\\anhttt59(clc)\\btl\\usercontrolgv.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{96F42B19-9C83-4AEE-AE72-4A0E81686AC8}|BTL.csproj|solutionrelative:usercontrolgv.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{96F42B19-9C83-4AEE-AE72-4A0E81686AC8}|BTL.csproj|c:\\users\\duong\\onedrive\\anhttt59(clc)\\btl\\database.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{96F42B19-9C83-4AEE-AE72-4A0E81686AC8}|BTL.csproj|solutionrelative:database.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{96F42B19-9C83-4AEE-AE72-4A0E81686AC8}|BTL.csproj|c:\\users\\duong\\onedrive\\anhttt59(clc)\\btl\\usercontrolsv.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{96F42B19-9C83-4AEE-AE72-4A0E81686AC8}|BTL.csproj|solutionrelative:usercontrolsv.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -26,46 +22,8 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 3,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "UserControlSV.cs",
-              "DocumentMoniker": "C:\\Users\\duong\\OneDrive\\ANHTTT59(CLC)\\BTL\\UserControlSV.cs",
-              "RelativeDocumentMoniker": "UserControlSV.cs",
-              "ToolTip": "C:\\Users\\duong\\OneDrive\\ANHTTT59(CLC)\\BTL\\UserControlSV.cs",
-              "RelativeToolTip": "UserControlSV.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB8AAAAXAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-24T13:05:09.399Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "UserControlSV.Designer.cs",
-              "DocumentMoniker": "C:\\Users\\duong\\OneDrive\\ANHTTT59(CLC)\\BTL\\UserControlSV.Designer.cs",
-              "RelativeDocumentMoniker": "UserControlSV.Designer.cs",
-              "ToolTip": "C:\\Users\\duong\\OneDrive\\ANHTTT59(CLC)\\BTL\\UserControlSV.Designer.cs",
-              "RelativeToolTip": "UserControlSV.Designer.cs",
-              "ViewState": "AgIAAAYBAAAAAAAAAAAEwDoAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-24T12:56:18.908Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "UserControlSV.cs [Design]",
-              "DocumentMoniker": "C:\\Users\\duong\\OneDrive\\ANHTTT59(CLC)\\BTL\\UserControlSV.cs",
-              "RelativeDocumentMoniker": "UserControlSV.cs",
-              "ToolTip": "C:\\Users\\duong\\OneDrive\\ANHTTT59(CLC)\\BTL\\UserControlSV.cs [Design]",
-              "RelativeToolTip": "UserControlSV.cs [Design]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-24T12:52:22.79Z",
-              "EditorCaption": " [Design]"
-            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
@@ -76,13 +34,38 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "UserControlGV.cs",
+              "DocumentMoniker": "C:\\Users\\duong\\OneDrive\\ANHTTT59(CLC)\\BTL\\UserControlGV.cs",
+              "RelativeDocumentMoniker": "UserControlGV.cs",
+              "ToolTip": "C:\\Users\\duong\\OneDrive\\ANHTTT59(CLC)\\BTL\\UserControlGV.cs",
+              "RelativeToolTip": "UserControlGV.cs",
+              "ViewState": "AgIAABEAAAAAAAAAAAAwwCIAAAASAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-24T14:07:59.958Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "UserControlGV.cs [Design]",
+              "DocumentMoniker": "C:\\Users\\duong\\OneDrive\\ANHTTT59(CLC)\\BTL\\UserControlGV.cs",
+              "RelativeDocumentMoniker": "UserControlGV.cs",
+              "ToolTip": "C:\\Users\\duong\\OneDrive\\ANHTTT59(CLC)\\BTL\\UserControlGV.cs [Design]",
+              "RelativeToolTip": "UserControlGV.cs [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-24T13:51:40.567Z",
+              "EditorCaption": " [Design]"
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 2,
               "Title": "Database.cs",
               "DocumentMoniker": "C:\\Users\\duong\\OneDrive\\ANHTTT59(CLC)\\BTL\\Database.cs",
               "RelativeDocumentMoniker": "Database.cs",
               "ToolTip": "C:\\Users\\duong\\OneDrive\\ANHTTT59(CLC)\\BTL\\Database.cs",
               "RelativeToolTip": "Database.cs",
-              "ViewState": "AgIAADEAAAAAAAAAAAAkwDkAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAANAAAAAAAAAAAAAqwOcAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-05-24T12:19:11.828Z",
               "EditorCaption": ""
