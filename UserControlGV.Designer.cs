@@ -155,7 +155,6 @@
             panel2.Controls.Add(buttonSua);
             panel2.Controls.Add(buttonXacNhan);
             panel2.Controls.Add(tableLayoutPanel);
-            panel2.Enabled = false;
             panel2.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             panel2.Location = new Point(20, 440);
             panel2.Name = "panel2";
@@ -180,7 +179,7 @@
             dataGridViewLH.Location = new Point(525, 58);
             dataGridViewLH.Name = "dataGridViewLH";
             dataGridViewLH.ReadOnly = true;
-            dataGridViewLH.Size = new Size(800, 262);
+            dataGridViewLH.Size = new Size(800, 298);
             dataGridViewLH.TabIndex = 5;
             // 
             // buttonXoa
@@ -338,8 +337,8 @@
             // 
             AutoScaleDimensions = new SizeF(9F, 21F);
             AutoScaleMode = AutoScaleMode.Font;
-            Controls.Add(panel2);
             Controls.Add(panel1);
+            Controls.Add(panel2);
             Font = new Font("Segoe UI", 12F);
             Margin = new Padding(4);
             Name = "UserControlGV";

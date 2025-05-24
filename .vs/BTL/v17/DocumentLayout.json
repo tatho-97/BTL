@@ -7,8 +7,24 @@
       "RelativeMoniker": "D:0:0:{96F42B19-9C83-4AEE-AE72-4A0E81686AC8}|BTL.csproj|solutionrelative:usercontrolgv.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{96F42B19-9C83-4AEE-AE72-4A0E81686AC8}|BTL.csproj|c:\\users\\duong\\onedrive\\anhttt59(clc)\\btl\\usercontrolgv.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{96F42B19-9C83-4AEE-AE72-4A0E81686AC8}|BTL.csproj|solutionrelative:usercontrolgv.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{96F42B19-9C83-4AEE-AE72-4A0E81686AC8}|BTL.csproj|c:\\users\\duong\\onedrive\\anhttt59(clc)\\btl\\usercontrolkhoa.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{96F42B19-9C83-4AEE-AE72-4A0E81686AC8}|BTL.csproj|solutionrelative:usercontrolkhoa.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{96F42B19-9C83-4AEE-AE72-4A0E81686AC8}|BTL.csproj|c:\\users\\duong\\onedrive\\anhttt59(clc)\\btl\\usercontrolmh.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{96F42B19-9C83-4AEE-AE72-4A0E81686AC8}|BTL.csproj|solutionrelative:usercontrolmh.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{96F42B19-9C83-4AEE-AE72-4A0E81686AC8}|BTL.csproj|c:\\users\\duong\\onedrive\\anhttt59(clc)\\btl\\usercontrollh.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{96F42B19-9C83-4AEE-AE72-4A0E81686AC8}|BTL.csproj|solutionrelative:usercontrollh.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{96F42B19-9C83-4AEE-AE72-4A0E81686AC8}|BTL.csproj|c:\\users\\duong\\onedrive\\anhttt59(clc)\\btl\\usercontroltk.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{96F42B19-9C83-4AEE-AE72-4A0E81686AC8}|BTL.csproj|solutionrelative:usercontroltk.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{96F42B19-9C83-4AEE-AE72-4A0E81686AC8}|BTL.csproj|c:\\users\\duong\\onedrive\\anhttt59(clc)\\btl\\usercontroltk.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{96F42B19-9C83-4AEE-AE72-4A0E81686AC8}|BTL.csproj|solutionrelative:usercontroltk.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{96F42B19-9C83-4AEE-AE72-4A0E81686AC8}|BTL.csproj|c:\\users\\duong\\onedrive\\anhttt59(clc)\\btl\\database.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -22,29 +38,8 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 0,
           "Children": [
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "UserControlGV.cs",
-              "DocumentMoniker": "C:\\Users\\duong\\OneDrive\\ANHTTT59(CLC)\\BTL\\UserControlGV.cs",
-              "RelativeDocumentMoniker": "UserControlGV.cs",
-              "ToolTip": "C:\\Users\\duong\\OneDrive\\ANHTTT59(CLC)\\BTL\\UserControlGV.cs",
-              "RelativeToolTip": "UserControlGV.cs",
-              "ViewState": "AgIAABEAAAAAAAAAAAAwwCIAAAASAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-24T14:07:59.958Z",
-              "EditorCaption": ""
-            },
             {
               "$type": "Document",
               "DocumentIndex": 0,
@@ -54,21 +49,90 @@
               "ToolTip": "C:\\Users\\duong\\OneDrive\\ANHTTT59(CLC)\\BTL\\UserControlGV.cs [Design]",
               "RelativeToolTip": "UserControlGV.cs [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-24T13:51:40.567Z",
+              "WhenOpened": "2025-05-24T16:43:44.076Z",
+              "EditorCaption": " [Design]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "UserControlKhoa.cs [Design]",
+              "DocumentMoniker": "C:\\Users\\duong\\OneDrive\\ANHTTT59(CLC)\\BTL\\UserControlKhoa.cs",
+              "RelativeDocumentMoniker": "UserControlKhoa.cs",
+              "ToolTip": "C:\\Users\\duong\\OneDrive\\ANHTTT59(CLC)\\BTL\\UserControlKhoa.cs [Design]",
+              "RelativeToolTip": "UserControlKhoa.cs [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-24T16:43:42.174Z",
               "EditorCaption": " [Design]"
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
+              "Title": "UserControlMH.cs [Design]",
+              "DocumentMoniker": "C:\\Users\\duong\\OneDrive\\ANHTTT59(CLC)\\BTL\\UserControlMH.cs",
+              "RelativeDocumentMoniker": "UserControlMH.cs",
+              "ToolTip": "C:\\Users\\duong\\OneDrive\\ANHTTT59(CLC)\\BTL\\UserControlMH.cs [Design]",
+              "RelativeToolTip": "UserControlMH.cs [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-24T16:43:34.046Z",
+              "EditorCaption": " [Design]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "UserControlLH.cs [Design]",
+              "DocumentMoniker": "C:\\Users\\duong\\OneDrive\\ANHTTT59(CLC)\\BTL\\UserControlLH.cs",
+              "RelativeDocumentMoniker": "UserControlLH.cs",
+              "ToolTip": "C:\\Users\\duong\\OneDrive\\ANHTTT59(CLC)\\BTL\\UserControlLH.cs [Design]",
+              "RelativeToolTip": "UserControlLH.cs [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-24T16:40:33.292Z",
+              "EditorCaption": " [Design]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "UserControlTK.cs",
+              "DocumentMoniker": "C:\\Users\\duong\\OneDrive\\ANHTTT59(CLC)\\BTL\\UserControlTK.cs",
+              "RelativeDocumentMoniker": "UserControlTK.cs",
+              "ToolTip": "C:\\Users\\duong\\OneDrive\\ANHTTT59(CLC)\\BTL\\UserControlTK.cs",
+              "RelativeToolTip": "UserControlTK.cs",
+              "ViewState": "AgIAAGMAAAAAAAAAAAAAAJkAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-24T16:38:27.879Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "UserControlTK.cs [Design]",
+              "DocumentMoniker": "C:\\Users\\duong\\OneDrive\\ANHTTT59(CLC)\\BTL\\UserControlTK.cs",
+              "RelativeDocumentMoniker": "UserControlTK.cs",
+              "ToolTip": "C:\\Users\\duong\\OneDrive\\ANHTTT59(CLC)\\BTL\\UserControlTK.cs [Design]",
+              "RelativeToolTip": "UserControlTK.cs [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-24T16:27:32.56Z",
+              "EditorCaption": " [Design]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
               "Title": "Database.cs",
               "DocumentMoniker": "C:\\Users\\duong\\OneDrive\\ANHTTT59(CLC)\\BTL\\Database.cs",
               "RelativeDocumentMoniker": "Database.cs",
               "ToolTip": "C:\\Users\\duong\\OneDrive\\ANHTTT59(CLC)\\BTL\\Database.cs",
               "RelativeToolTip": "Database.cs",
-              "ViewState": "AgIAANAAAAAAAAAAAAAqwOcAAAAJAAAAAAAAAA==",
+              "ViewState": "AgIAAIcBAAAAAAAAAAAQwKABAABOAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-05-24T12:19:11.828Z",
               "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
             }
           ]
         }

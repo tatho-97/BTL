@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BTL
 {
-    class SinhVien
+    public class SinhVien
     {
         public string? MaSV;
         public string? TenSV;
@@ -16,7 +16,7 @@ namespace BTL
         public string? MaLop;
     }
 
-    class Diem
+    public class Diem
     {
         public string? MaSV;
         public string? MaMH;
@@ -26,19 +26,19 @@ namespace BTL
         public float DiemHP;
     }
 
-    class Lop
+    public class Lop
     {
         public string? MaLop;
         public string? TenLop;
     }
 
-    class Khoa
+    public class Khoa
     {
         public string? MaKhoa;
         public string? TenKhoa;
     }
 
-    class MonHoc
+    public class MonHoc
     {
         public string? MaMH;
         public string? TenMH;
@@ -46,7 +46,7 @@ namespace BTL
         public string? MaKhoa;
     }
 
-    class GiangVien
+    public class GiangVien
     {
         public string? MaGV;
         public string? TenGV;
@@ -54,14 +54,14 @@ namespace BTL
         public string? MaMH;
     }
 
-    class GiangDay
+    public class GiangDay
     {
         public string? MaGV;
         public string? MaMH;
         public string? MaLop;
     }
 
-    class TaiKhoan
+    public class TaiKhoan
     {
         public string? Username;
         public string? Password;

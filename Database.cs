@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace BTL
 {
-    internal class Database
+    public class Database
     {
         // đặt file .db cạnh .exe (bin\Debug\…)
         private readonly string connectionString =
@@ -230,5 +230,190 @@ namespace BTL
             Exec("DELETE FROM GiangDay WHERE MaGV=@gv;", ("@gv", maGV));
             return Exec("DELETE FROM GiangVien WHERE MaGV=@gv;", ("@gv", maGV)) > 0;
         }
+
+        // ===== LẤY DỮ LIỆU LỚP ======================================================
+        public DataTable GetAllLop_Detail()
+        {
+            return GetDataTable("SELECT MaLop, TenLop FROM Lop ORDER BY TenLop;");
+        }
+
+        public DataTable GetSinhVienByLop(string maLop)
+        {
+            const string sql = @"
+        SELECT MaSV, TenSV, GioiTinh, NgaySinh
+        FROM   SinhVien
+        WHERE  MaLop = @lop;";
+            return GetDataTable(sql, ("@lop", maLop));
+        }
+
+        public DataTable GetMonByLop(string maLop)
+        {
+            const string sql = @"
+        SELECT gd.MaMH, mh.TenMH, gd.MaGV, gv.TenGV
+        FROM   GiangDay gd
+        JOIN   MonHoc  mh ON mh.MaMH = gd.MaMH
+        JOIN   GiangVien gv ON gv.MaGV = gd.MaGV
+        WHERE  gd.MaLop = @lop;";
+            return GetDataTable(sql, ("@lop", maLop));
+        }
+
+        // ===== CRUD LỚP ==============================================================
+        // (cần PK MaLop duy nhất, còn MaKhoa là FK)
+        public bool ExistMaLop(string maLop) =>
+            GetDataTable("SELECT 1 FROM Lop WHERE MaLop=@m LIMIT 1;", ("@m", maLop)).Rows.Count > 0;
+
+        public bool InsertLop(Lop lp) =>
+    Exec("INSERT INTO Lop(MaLop, TenLop) VALUES(@Ma,@Ten);",
+         ("@Ma", lp.MaLop), ("@Ten", lp.TenLop)) > 0;
+
+        public bool UpdateLop(Lop lp) =>
+            Exec("UPDATE Lop SET TenLop=@Ten WHERE MaLop=@Ma;",
+                 ("@Ma", lp.MaLop), ("@Ten", lp.TenLop)) > 0;
+
+        public bool DeleteLop(string maLop)
+        {
+            // 1. Xóa điểm của SV trong lớp
+            Exec(@"DELETE FROM Diem
+           WHERE MaSV IN (SELECT MaSV FROM SinhVien WHERE MaLop=@lop);",
+                 ("@lop", maLop));
+
+            // 2. Xóa sinh viên
+            Exec("DELETE FROM SinhVien WHERE MaLop=@lop;", ("@lop", maLop));
+
+            // 3. Xóa giảng dạy
+            Exec("DELETE FROM GiangDay WHERE MaLop=@lop;", ("@lop", maLop));
+
+            // 4. Xóa lớp
+            return Exec("DELETE FROM Lop WHERE MaLop=@lop;", ("@lop", maLop)) > 0;
+        }
+
+        // ===== GIANGDAY (thêm môn cho lớp) ==========================================
+        public bool InsertGiangDay(string maLop, string maMH, string maGV)
+        {
+            const string sql = "INSERT INTO GiangDay(MaGV, MaMH, MaLop) VALUES(@gv,@mh,@lop);";
+            return Exec(sql, ("@gv", maGV), ("@mh", maMH), ("@lop", maLop)) > 0;
+        }
+        public bool DeleteGiangDay(string maLop, string maMH) =>
+            Exec("DELETE FROM GiangDay WHERE MaLop=@lop AND MaMH=@mh;", ("@lop", maLop), ("@mh", maMH)) > 0;
+
+        public DataTable GetGiangVienByMon(string maMH)
+        {
+            const string sql = "SELECT MaGV, TenGV FROM GiangVien WHERE MaMH=@mh;";
+            return GetDataTable(sql, ("@mh", maMH));
+        }
+
+        public DataTable GetAllMonHoc_Detail()
+        {
+            const string sql =
+                "SELECT mh.MaMH, mh.TenMH, mh.TinChi, mh.MaKhoa, k.TenKhoa " +
+                "FROM   MonHoc mh LEFT JOIN Khoa k ON k.MaKhoa = mh.MaKhoa " +
+                "ORDER BY mh.TenMH;";
+            return GetDataTable(sql);
+        }
+
+        public bool ExistMaMH(string maMH) =>
+            GetDataTable("SELECT 1 FROM MonHoc WHERE MaMH=@m LIMIT 1;", ("@m", maMH)).Rows.Count > 0;
+
+        public bool InsertMonHoc(MonHoc mh)
+        {
+            const string sql = "INSERT INTO MonHoc(MaMH, TenMH, TinChi, MaKhoa) VALUES(@Ma,@Ten,@TC,@Khoa);";
+            return Exec(sql,
+                ("@Ma", mh.MaMH),
+                ("@Ten", mh.TenMH),
+                ("@TC", mh.TinChi),
+                ("@Khoa", mh.MaKhoa)) > 0;
+        }
+
+        public bool UpdateMonHoc(MonHoc mh)
+        {
+            const string sql = "UPDATE MonHoc SET TenMH=@Ten, TinChi=@TC, MaKhoa=@Khoa WHERE MaMH=@Ma;";
+            return Exec(sql,
+                ("@Ma", mh.MaMH),
+                ("@Ten", mh.TenMH),
+                ("@TC", mh.TinChi),
+                ("@Khoa", mh.MaKhoa)) > 0;
+        }
+
+        public bool DeleteMonHoc(string maMH)
+        {
+            // 1. Xoá điểm liên quan
+            Exec("DELETE FROM Diem WHERE MaMH=@mh;", ("@mh", maMH));
+            // 2. Xoá giảng dạy liên quan
+            Exec("DELETE FROM GiangDay WHERE MaMH=@mh;", ("@mh", maMH));
+            // 3. Bỏ liên kết môn cho giảng viên (set null)
+            Exec("UPDATE GiangVien SET MaMH=NULL WHERE MaMH=@mh;", ("@mh", maMH));
+            // 4. Xoá môn
+            return Exec("DELETE FROM MonHoc WHERE MaMH=@mh;", ("@mh", maMH)) > 0;
+        }
+
+        public DataTable GetAllKhoa_Detail() =>
+    GetDataTable("SELECT MaKhoa, TenKhoa FROM Khoa ORDER BY TenKhoa;");
+
+        public bool ExistMaKhoa(string ma) =>
+            GetDataTable("SELECT 1 FROM Khoa WHERE MaKhoa=@m LIMIT 1;", ("@m", ma)).Rows.Count > 0;
+
+        public bool InsertKhoa(Khoa k) =>
+            Exec("INSERT INTO Khoa(MaKhoa, TenKhoa) VALUES(@Ma,@Ten);",
+                 ("@Ma", k.MaKhoa), ("@Ten", k.TenKhoa)) > 0;
+
+        public bool UpdateKhoa(Khoa k) =>
+            Exec("UPDATE Khoa SET TenKhoa=@Ten WHERE MaKhoa=@Ma;",
+                 ("@Ma", k.MaKhoa), ("@Ten", k.TenKhoa)) > 0;
+
+        public bool DeleteKhoa(string maKhoa)
+        {
+            // 1. Xoá điểm của tất cả môn thuộc khoa
+            Exec(@"DELETE FROM Diem WHERE MaMH IN (SELECT MaMH FROM MonHoc WHERE MaKhoa=@k);",
+                 ("@k", maKhoa));
+
+            // 2. Xoá GiangDay liên quan môn & giảng viên của khoa
+            Exec(@"DELETE FROM GiangDay WHERE MaMH IN (SELECT MaMH FROM MonHoc WHERE MaKhoa=@k);",
+                 ("@k", maKhoa));
+            Exec(@"DELETE FROM GiangDay WHERE MaGV IN (SELECT MaGV FROM GiangVien WHERE MaKhoa=@k);",
+                 ("@k", maKhoa));
+
+            // 3. Xoá GiangVien của khoa
+            Exec("DELETE FROM GiangVien WHERE MaKhoa=@k;", ("@k", maKhoa));
+
+            // 4. Xoá MonHoc của khoa
+            Exec("DELETE FROM MonHoc WHERE MaKhoa=@k;", ("@k", maKhoa));
+
+            // 5. Cuối cùng xoá Khoa
+            return Exec("DELETE FROM Khoa WHERE MaKhoa=@k;", ("@k", maKhoa)) > 0;
+        }
+
+        public DataTable GetAllTaiKhoan()
+        {
+            const string sql = @"SELECT tk.Username, tk.Password, tk.Role,
+                                 tk.MaGV, gv.TenGV
+                          FROM   TaiKhoan tk
+                          LEFT JOIN GiangVien gv ON gv.MaGV = tk.MaGV
+                          ORDER  BY tk.Username;";
+            return GetDataTable(sql);
+        }
+
+        public bool ExistUsername(string user) =>
+            GetDataTable("SELECT 1 FROM TaiKhoan WHERE Username=@u LIMIT 1;", ("@u", user)).Rows.Count > 0;
+
+        public bool InsertTaiKhoan(TaiKhoan tk)
+        {
+            const string sql = @"INSERT INTO TaiKhoan(Username,Password,Role,MaGV,MaKhoa)
+                        VALUES(@u,@p,@r,@gv,@k);";
+            return Exec(sql,
+                ("@u", tk.Username),
+                ("@p", tk.Password),   // ở bản demo để plain‑text
+                ("@r", tk.Role),
+                ("@gv", tk.MaGV),
+                ("@k", tk.MaKhoa)) > 0;
+        }
+
+        public bool UpdatePassword(string user, string newPass)
+        {
+            return Exec("UPDATE TaiKhoan SET Password=@p WHERE Username=@u;",
+                        ("@p", newPass), ("@u", user)) > 0;
+        }
+
+        public bool DeleteTaiKhoan(string user) =>
+            Exec("DELETE FROM TaiKhoan WHERE Username=@u;", ("@u", user)) > 0;
     }
 }
