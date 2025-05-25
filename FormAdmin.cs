@@ -38,7 +38,7 @@ namespace BTL
             { tC, sV, gV, lH, mH, khoa, tK };
 
             navigationControl = new NavigationControl(userControl, panelContent); // create an instance of NavigationControl class
-            navigationControl.Display(0); // display UserControl1 as default
+            navigationControl.Display(0);
         }
 
         private void InitializeNavigationButton()
@@ -92,6 +92,11 @@ namespace BTL
         {
             navigationControl.Display(6);
             navigationButton.Highlight(buttonTK);
+        }
+
+        private void buttonDX_Click(object sender, EventArgs e)
+        {
+            this.Close();
         }
     }
 }

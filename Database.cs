@@ -415,5 +415,41 @@ namespace BTL
 
         public bool DeleteTaiKhoan(string user) =>
             Exec("DELETE FROM TaiKhoan WHERE Username=@u;", ("@u", user)) > 0;
+
+
+        // ==== ĐIỂM ===================================================
+
+        // lấy danh sách SV của lớp kèm điểm môn đó (nếu có)
+        public DataTable GetSV_Diem_ByLop(string maLop, string maMH)
+        {
+            const string sql = @"
+        SELECT  sv.MaSV, sv.TenSV, sv.GioiTinh, sv.NgaySinh, sv.DiaChi,
+                d.DiemCC, d.DiemTX, d.DiemTHI, d.DiemHP
+        FROM    SinhVien sv
+        LEFT JOIN Diem d
+               ON d.MaSV = sv.MaSV AND d.MaMH = @mh
+        WHERE   sv.MaLop = @lop
+        ORDER BY sv.MaSV;";
+            return GetDataTable(sql, ("@lop", maLop), ("@mh", maMH));
+        }
+
+        public bool ExistDiem(string maSV, string maMH) =>
+            GetDataTable(@"SELECT 1 FROM Diem WHERE MaSV=@sv AND MaMH=@mh LIMIT 1;",
+                         ("@sv", maSV), ("@mh", maMH)).Rows.Count > 0;
+
+        public bool InsertDiem(Diem d) => Exec(
+            @"INSERT INTO Diem(MaSV,MaMH,DiemCC,DiemTX,DiemTHI,DiemHP)
+      VALUES(@sv,@mh,@cc,@tx,@thi,@hp);",
+            ("@sv", d.MaSV), ("@mh", d.MaMH),
+            ("@cc", d.DiemCC), ("@tx", d.DiemTX),
+            ("@thi", d.DiemTHI), ("@hp", d.DiemHP)) > 0;
+
+        public bool UpdateDiem(Diem d) => Exec(
+            @"UPDATE Diem SET DiemCC=@cc,DiemTX=@tx,
+                      DiemTHI=@thi,DiemHP=@hp
+      WHERE MaSV=@sv AND MaMH=@mh;",
+            ("@sv", d.MaSV), ("@mh", d.MaMH),
+            ("@cc", d.DiemCC), ("@tx", d.DiemTX),
+            ("@thi", d.DiemTHI), ("@hp", d.DiemHP)) > 0;
     }
 }

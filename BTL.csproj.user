@@ -13,6 +13,12 @@
     <Compile Update="FormThemMH.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="UserControlCD.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="UserControlDiem.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Update="UserControlGV.cs">
       <SubType>UserControl</SubType>
     </Compile>

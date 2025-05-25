@@ -34,6 +34,8 @@
             label2 = new Label();
             textBoxUsername = new TextBox();
             textBoxPassword = new TextBox();
+            tableLayoutPanel1 = new TableLayoutPanel();
+            tableLayoutPanel1.SuspendLayout();
             SuspendLayout();
             // 
             // panel1
@@ -48,7 +50,7 @@
             // 
             // buttonLogin
             // 
-            buttonLogin.Location = new Point(447, 272);
+            buttonLogin.Location = new Point(650, 188);
             buttonLogin.Margin = new Padding(4);
             buttonLogin.Name = "buttonLogin";
             buttonLogin.Size = new Size(96, 32);
@@ -56,13 +58,11 @@
             buttonLogin.Text = "LOGIN";
             buttonLogin.UseVisualStyleBackColor = true;
             buttonLogin.Click += buttonLogin_Click;
-            this.AcceptButton = buttonLogin;                 // nhấn Enter để đăng nhập
-            textBoxPassword.UseSystemPasswordChar = true;    // ẩn mật khẩu
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(433, 70);
+            label1.Location = new Point(3, 0);
             label1.Name = "label1";
             label1.Size = new Size(84, 21);
             label1.TabIndex = 2;
@@ -71,7 +71,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(418, 170);
+            label2.Location = new Point(3, 50);
             label2.Name = "label2";
             label2.Size = new Size(79, 21);
             label2.TabIndex = 3;
@@ -79,34 +79,53 @@
             // 
             // textBoxUsername
             // 
-            textBoxUsername.Location = new Point(407, 103);
+            textBoxUsername.Dock = DockStyle.Fill;
+            textBoxUsername.Location = new Point(131, 3);
             textBoxUsername.Name = "textBoxUsername";
-            textBoxUsername.Size = new Size(221, 29);
+            textBoxUsername.Size = new Size(228, 29);
             textBoxUsername.TabIndex = 4;
             // 
             // textBoxPassword
             // 
-            textBoxPassword.Location = new Point(417, 194);
+            textBoxPassword.Dock = DockStyle.Fill;
+            textBoxPassword.Location = new Point(131, 53);
             textBoxPassword.Name = "textBoxPassword";
-            textBoxPassword.Size = new Size(211, 29);
+            textBoxPassword.Size = new Size(228, 29);
             textBoxPassword.TabIndex = 5;
+            textBoxPassword.UseSystemPasswordChar = true;
+            // 
+            // tableLayoutPanel1
+            // 
+            tableLayoutPanel1.ColumnCount = 2;
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 35.4717F));
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 64.5283051F));
+            tableLayoutPanel1.Controls.Add(textBoxUsername, 1, 0);
+            tableLayoutPanel1.Controls.Add(textBoxPassword, 1, 1);
+            tableLayoutPanel1.Controls.Add(label1, 0, 0);
+            tableLayoutPanel1.Controls.Add(label2, 0, 1);
+            tableLayoutPanel1.Location = new Point(387, 81);
+            tableLayoutPanel1.Name = "tableLayoutPanel1";
+            tableLayoutPanel1.RowCount = 2;
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            tableLayoutPanel1.Size = new Size(362, 100);
+            tableLayoutPanel1.TabIndex = 6;
             // 
             // FormLogin
             // 
+            AcceptButton = buttonLogin;
             AutoScaleDimensions = new SizeF(9F, 21F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(771, 391);
-            Controls.Add(textBoxPassword);
-            Controls.Add(textBoxUsername);
-            Controls.Add(label2);
-            Controls.Add(label1);
+            Controls.Add(tableLayoutPanel1);
             Controls.Add(buttonLogin);
             Controls.Add(panel1);
             Font = new Font("Segoe UI", 12F);
             Margin = new Padding(4);
             Name = "FormLogin";
+            tableLayoutPanel1.ResumeLayout(false);
+            tableLayoutPanel1.PerformLayout();
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
@@ -117,5 +136,6 @@
         private Label label2;
         private TextBox textBoxUsername;
         private TextBox textBoxPassword;
+        private TableLayoutPanel tableLayoutPanel1;
     }
 }

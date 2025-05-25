@@ -54,3 +54,5 @@ C:\Users\duong\OneDrive\ANHTTT59(CLC)\BTL\bin\Debug\net9.0-windows\runtimes\win-
 C:\Users\duong\OneDrive\ANHTTT59(CLC)\BTL\bin\Debug\net9.0-windows\runtimes\win-x86\native\e_sqlite3.dll
 C:\Users\duong\OneDrive\ANHTTT59(CLC)\BTL\obj\Debug\net9.0-windows\BTL.sourcelink.json
 C:\Users\duong\OneDrive\ANHTTT59(CLC)\BTL\obj\Debug\net9.0-windows\BTL.FormThemMH.resources
+C:\Users\duong\OneDrive\ANHTTT59(CLC)\BTL\obj\Debug\net9.0-windows\BTL.UserControlCD.resources
+C:\Users\duong\OneDrive\ANHTTT59(CLC)\BTL\obj\Debug\net9.0-windows\BTL.UserControlDiem.resources

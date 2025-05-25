@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             panelMenu = new Panel();
-            button1 = new Button();
+            buttonDX = new Button();
             pictureBoxLogo = new PictureBox();
             tableLayoutPanelMenu = new TableLayoutPanel();
             buttonTC = new Button();
@@ -48,7 +48,7 @@
             // panelMenu
             // 
             panelMenu.BackColor = SystemColors.ActiveCaption;
-            panelMenu.Controls.Add(button1);
+            panelMenu.Controls.Add(buttonDX);
             panelMenu.Controls.Add(pictureBoxLogo);
             panelMenu.Controls.Add(tableLayoutPanelMenu);
             panelMenu.Dock = DockStyle.Left;
@@ -58,15 +58,17 @@
             panelMenu.Size = new Size(200, 861);
             panelMenu.TabIndex = 0;
             // 
-            // button1
+            // buttonDX
             // 
-            button1.Dock = DockStyle.Bottom;
-            button1.Location = new Point(0, 815);
-            button1.Name = "button1";
-            button1.Size = new Size(200, 46);
-            button1.TabIndex = 2;
-            button1.Text = "ĐĂNG XUẤT";
-            button1.UseVisualStyleBackColor = true;
+            buttonDX.Dock = DockStyle.Bottom;
+            buttonDX.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            buttonDX.Location = new Point(0, 815);
+            buttonDX.Name = "buttonDX";
+            buttonDX.Size = new Size(200, 46);
+            buttonDX.TabIndex = 2;
+            buttonDX.Text = "ĐĂNG XUẤT";
+            buttonDX.UseVisualStyleBackColor = true;
+            buttonDX.Click += buttonDX_Click;
             // 
             // pictureBoxLogo
             // 
@@ -219,7 +221,7 @@
         private Button buttonLH;
         private Button buttonMH;
         private Button buttonKhoa;
-        private Button button1;
+        private Button buttonDX;
         private Button buttonTK;
         private Panel panelContent;
     }
