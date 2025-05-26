@@ -58,7 +58,6 @@
             label7 = new Label();
             comboBoxLop = new ComboBox();
             label4 = new Label();
-            buttonSearch = new Button();
             textBoxSearch = new TextBox();
             label2 = new Label();
             dataGridView = new DataGridView();
@@ -91,6 +90,7 @@
             buttonHuy.Text = "HỦY";
             buttonHuy.UseVisualStyleBackColor = true;
             buttonHuy.Visible = false;
+            buttonHuy.Click += buttonHuy_Click;
             // 
             // buttonSua
             // 
@@ -101,6 +101,7 @@
             buttonSua.TabIndex = 2;
             buttonSua.Text = "SỬA";
             buttonSua.UseVisualStyleBackColor = true;
+            buttonSua.Click += buttonSua_Click;
             // 
             // buttonXacNhan
             // 
@@ -112,6 +113,7 @@
             buttonXacNhan.Text = "XÁC NHẬN";
             buttonXacNhan.UseVisualStyleBackColor = true;
             buttonXacNhan.Visible = false;
+            buttonXacNhan.Click += buttonXacNhan_Click;
             // 
             // tableLayoutPanel
             // 
@@ -375,7 +377,6 @@
             panel1.Controls.Add(label7);
             panel1.Controls.Add(comboBoxLop);
             panel1.Controls.Add(label4);
-            panel1.Controls.Add(buttonSearch);
             panel1.Controls.Add(textBoxSearch);
             panel1.Controls.Add(label2);
             panel1.Controls.Add(dataGridView);
@@ -395,6 +396,7 @@
             // 
             // comboBoxLop
             // 
+            comboBoxLop.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBoxLop.FormattingEnabled = true;
             comboBoxLop.Location = new Point(40, 84);
             comboBoxLop.Name = "comboBoxLop";
@@ -410,16 +412,6 @@
             label4.Size = new Size(189, 21);
             label4.TabIndex = 5;
             label4.Text = "DANH SÁCH SINH VIÊN";
-            // 
-            // buttonSearch
-            // 
-            buttonSearch.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            buttonSearch.Location = new Point(170, 201);
-            buttonSearch.Name = "buttonSearch";
-            buttonSearch.Size = new Size(100, 30);
-            buttonSearch.TabIndex = 3;
-            buttonSearch.Text = "TÌM KIẾM";
-            buttonSearch.UseVisualStyleBackColor = true;
             // 
             // textBoxSearch
             // 
@@ -515,7 +507,6 @@
         private Label label7;
         private ComboBox comboBoxLop;
         private Label label4;
-        private Button buttonSearch;
         private TextBox textBoxSearch;
         private Label label2;
         public DataGridView dataGridView;

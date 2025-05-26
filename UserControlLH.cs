@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace BTL
@@ -13,10 +7,8 @@ namespace BTL
     public partial class UserControlLH : UserControl
     {
         private readonly Database _db = new();
-
-        private DataTable _dtLop;          // nguồn thô
-        private DataView _viewLop;        // dùng lọc tìm kiếm
-
+        private DataTable _dtLop;
+        private DataView _viewLop;
         private enum Mode { View, Add, Edit }
         private Mode _mode = Mode.View;
 
@@ -26,17 +18,14 @@ namespace BTL
             Load += UserControlLH_Load;
         }
 
-        // ---------------------------------------------------------------------
-        // 1. NẠP DỮ LIỆU
-        // ---------------------------------------------------------------------
         private void UserControlLH_Load(object? sender, EventArgs e)
         {
             // Lớp học
-            _dtLop = _db.GetAllLop_Detail();
+            _dtLop = _db.GetAll<Lop>();
             _viewLop = _dtLop.DefaultView;
             dataGridView.DataSource = _viewLop;
             dataGridView.SelectionChanged += DataGridView_SelectionChanged;
-            // — ĐỔI TIÊU ĐỀ CỘT —
+            // Đổi tiêu đề cột
             if (dataGridView.Columns.Contains("MaLop"))
                 dataGridView.Columns["MaLop"].HeaderText = "Mã lớp";
             if (dataGridView.Columns.Contains("TenLop"))
@@ -45,53 +34,38 @@ namespace BTL
             if (dataGridView.Columns.Contains("TenKhoa"))
                 dataGridView.Columns["TenKhoa"].HeaderText = "Khoa";
 
-            // — ẨN CỘT KHÓA NGOẠI (nếu có) —
+            // Ẩn cột khóa ngoại (nếu có)
             if (dataGridView.Columns.Contains("MaKhoa"))
                 dataGridView.Columns["MaKhoa"].Visible = false;
 
-            // — TỰ ĐỘNG CO GIÃN CỘT CHO VỪA VỚI GRID — 
+            // Tự động co giãn cột cho vừa với grid
             dataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-
-            // — TUỲ CHỈNH TỈ LỆ CHIẾM CHỖ MỖI CỘT (FillWeight là phần trăm) —
-            dataGridView.Columns["MaLop"].FillWeight = 20;   // 20%
-            dataGridView.Columns["TenLop"].FillWeight = 50;   // 50%
+            // Tùy chỉnh tỉ lệ chiếm chỗ mỗi cột (FillWeight)
+            dataGridView.Columns["MaLop"].FillWeight = 20;
+            dataGridView.Columns["TenLop"].FillWeight = 50;
             if (dataGridView.Columns.Contains("TenKhoa"))
-                dataGridView.Columns["TenKhoa"].FillWeight = 30;   // 30%
-
-            // (Tuỳ chọn) Nếu bạn muốn dòng tự động tăng chiều cao theo nội dung:
-            // dataGridView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+                dataGridView.Columns["TenKhoa"].FillWeight = 30;
 
             // Tìm kiếm
-            buttonSearch.Click += DoSearch;
-            textBoxSearch.TextChanged += DoSearch;
-
-            // CRUD buttons
-            //buttonThem.Click += ButtonThem_Click;
-            //buttonSua.Click += ButtonSua_Click;
-            //buttonXoa.Click += ButtonXoa_Click;
-            //buttonHuy.Click += ButtonHuy_Click;
-            //buttonXacNhan.Click += ButtonXacNhan_Click;
-
-            //// Thêm môn học cho lớp
-            //buttonMH.Click += ButtonMH_Click;
+            buttonSearch.Click += buttonSearch_Click;
+            textBoxSearch.TextChanged += buttonSearch_Click;
+            // Thêm môn học cho lớp
+            buttonMH.Click += buttonMH_Click;
 
             if (dataGridView.Rows.Count > 0)
                 DataGridView_SelectionChanged(null, EventArgs.Empty);
         }
 
-        // ------------------------------------------------------------------
-        // 2. CHỌN 1 LỚP  →  đổ thông tin + danh sách SV, Môn
-        // ------------------------------------------------------------------
+        // 2. CHỌN 1 LỚP → đổ thông tin + danh sách SV, Môn
         private void DataGridView_SelectionChanged(object? sender, EventArgs e)
         {
             if (dataGridView.CurrentRow == null) return;
             var row = ((DataRowView)dataGridView.CurrentRow.DataBoundItem).Row;
-
             textBoxMaLop.Text = row["MaLop"].ToString();
             textBoxTenLop.Text = row["TenLop"].ToString();
-
             string maLop = row["MaLop"].ToString();
-            dataGridViewSV.DataSource = _db.GetSinhVienByLop(maLop);    // Đổi tiêu đề
+            // Danh sách sinh viên của lớp
+            dataGridViewSV.DataSource = _db.GetSinhVienByLop(maLop);
             if (dataGridViewSV.Columns.Contains("MaSV"))
                 dataGridViewSV.Columns["MaSV"].HeaderText = "Mã sinh viên";
             if (dataGridViewSV.Columns.Contains("TenSV"))
@@ -104,8 +78,8 @@ namespace BTL
                 dataGridViewSV.Columns["DiaChi"].HeaderText = "Địa chỉ";
             dataGridViewSV.Columns["NgaySinh"].Visible = false;
             dataGridViewSV.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-           
-            
+
+            // Danh sách môn học của lớp (kèm giảng viên phụ trách)
             dataGridViewMH.DataSource = _db.GetMonByLop(maLop);
             if (dataGridViewMH.Columns.Contains("MaMH"))
                 dataGridViewMH.Columns["MaMH"].HeaderText = "Mã môn học";
@@ -113,15 +87,13 @@ namespace BTL
                 dataGridViewMH.Columns["TenMH"].HeaderText = "Tên môn học";
             if (dataGridViewMH.Columns.Contains("TenGV"))
                 dataGridViewMH.Columns["TenGV"].HeaderText = "Giảng viên";
-            dataGridViewMH.Columns["MaGV"].Visible = false;
+            if (dataGridViewMH.Columns.Contains("MaGV"))
+                dataGridViewMH.Columns["MaGV"].Visible = false;
             dataGridViewMH.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-
         }
 
-        // ------------------------------------------------------------------
         // 3. TÌM KIẾM
-        // ------------------------------------------------------------------
-        private void DoSearch(object? sender, EventArgs e)
+        private void buttonSearch_Click(object? sender, EventArgs e)
         {
             string kw = textBoxSearch.Text.Replace("'", "''").Trim();
             _viewLop.RowFilter = string.IsNullOrEmpty(kw)
@@ -129,77 +101,70 @@ namespace BTL
                 : $"MaLop LIKE '%{kw}%' OR TenLop LIKE '%{kw}%'";
         }
 
-        // ------------------------------------------------------------------
         // 4. CRUD LỚP HỌC
-        // ------------------------------------------------------------------
-        private void buttonThem_Click(object? s, EventArgs e)
+        private void buttonThem_Click(object? sender, EventArgs e)
         {
             _mode = Mode.Add;
             ClearInput();
-            SetEditMode(true);
+            ToggleEdit(true);
         }
 
-        private void buttonSua_Click(object? s, EventArgs e)
+        private void buttonSua_Click(object? sender, EventArgs e)
         {
             if (dataGridView.CurrentRow == null) return;
             _mode = Mode.Edit;
-            SetEditMode(true);
+            ToggleEdit(true);
         }
 
-        private void buttonHuy_Click(object? s, EventArgs e)
+        private void buttonHuy_Click(object? sender, EventArgs e)
         {
             _mode = Mode.View;
-            SetEditMode(false);
+            ToggleEdit(false);
             if (dataGridView.Rows.Count > 0)
-                DataGridView_SelectionChanged(null, EventArgs.Empty);
+                DataGridView_SelectionChanged(null!, EventArgs.Empty);
         }
 
-        private void buttonXacNhan_Click(object? s, EventArgs e)
+        private void buttonXacNhan_Click(object? sender, EventArgs e)
         {
             var lp = new Lop
             {
                 MaLop = textBoxMaLop.Text.Trim(),
                 TenLop = textBoxTenLop.Text.Trim()
             };
-
             bool ok = false;
             if (_mode == Mode.Add)
             {
-                if (_db.ExistMaLop(lp.MaLop))
+                if (_db.Exist<Lop>(lp.MaLop))
                 {
                     MessageBox.Show("Mã lớp đã tồn tại!");
                     textBoxMaLop.Focus();
                     return;
                 }
-                ok = _db.InsertLop(lp);
+                ok = _db.Insert<Lop>(lp);
             }
             else if (_mode == Mode.Edit)
             {
-                ok = _db.UpdateLop(lp);
+                ok = _db.Update<Lop>(lp);
             }
-
             MessageBox.Show(ok ? "Lưu thành công" : "Thao tác thất bại!");
             RefreshGrid();
-            buttonHuy_Click(null, EventArgs.Empty);
+            buttonHuy_Click(null!, EventArgs.Empty);
         }
 
-        private void buttonXoa_Click(object? s, EventArgs e)
+        private void buttonXoa_Click(object? sender, EventArgs e)
         {
             if (dataGridView.CurrentRow == null) return;
             string ma = textBoxMaLop.Text;
             if (MessageBox.Show($"Xoá lớp {ma}?", "Xác nhận",
-                                 MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
-                == DialogResult.Yes)
+                                 MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
             {
-                _db.DeleteLop(ma);
+                _db.Delete<Lop>(ma);
                 RefreshGrid();
             }
         }
 
-        // ------------------------------------------------------------------
-        // 5. THÊM MÔN HỌC CHO LỚP (GiangDay)
-        // ------------------------------------------------------------------
-        private void buttonMH_Click(object? s, EventArgs e)
+        // 5. Thêm môn học cho lớp (GiangDay)
+        private void buttonMH_Click(object? sender, EventArgs e)
         {
             if (dataGridView.CurrentRow == null) return;
             string maLop = textBoxMaLop.Text;
@@ -208,13 +173,11 @@ namespace BTL
                 dataGridViewMH.DataSource = _db.GetMonByLop(maLop);
         }
 
-        // ------------------------------------------------------------------
         // 6. Tiện ích
-        // ------------------------------------------------------------------
         private void RefreshGrid()
         {
             string filter = _viewLop.RowFilter;
-            _dtLop = _db.GetAllLop_Detail();
+            _dtLop = _db.GetAll<Lop>();
             _viewLop = new DataView(_dtLop) { RowFilter = filter };
             dataGridView.DataSource = _viewLop;
         }
@@ -225,13 +188,15 @@ namespace BTL
             textBoxTenLop.Clear();
         }
 
-        private void SetEditMode(bool enable)
+        private void ToggleEdit(bool enable)
         {
+            dataGridView.Enabled = !enable;
+            dataGridViewMH.Enabled = !enable;
+            dataGridViewSV.Enabled = !enable;
             textBoxTenLop.Enabled = enable;
             textBoxMaLop.Enabled = (_mode == Mode.Add);
-
             buttonXacNhan.Visible = buttonHuy.Visible = enable;
-            buttonThem.Enabled = buttonSua.Enabled = buttonXoa.Enabled = !enable;
+            buttonThem.Visible = buttonSua.Visible = buttonXoa.Visible = !enable;
         }
     }
 }

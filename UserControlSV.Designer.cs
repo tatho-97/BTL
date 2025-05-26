@@ -386,6 +386,7 @@
             // comboBoxLop
             // 
             comboBoxLop.Dock = DockStyle.Fill;
+            comboBoxLop.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBoxLop.Enabled = false;
             comboBoxLop.FormattingEnabled = true;
             comboBoxLop.Location = new Point(770, 78);

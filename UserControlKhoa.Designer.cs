@@ -32,7 +32,6 @@
             buttonXoa = new Button();
             buttonThem = new Button();
             label4 = new Label();
-            buttonSearch = new Button();
             textBoxSearch = new TextBox();
             label2 = new Label();
             dataGridView = new DataGridView();
@@ -56,7 +55,6 @@
             panel1.Controls.Add(buttonXoa);
             panel1.Controls.Add(buttonThem);
             panel1.Controls.Add(label4);
-            panel1.Controls.Add(buttonSearch);
             panel1.Controls.Add(textBoxSearch);
             panel1.Controls.Add(label2);
             panel1.Controls.Add(dataGridView);
@@ -94,16 +92,6 @@
             label4.Size = new Size(153, 21);
             label4.TabIndex = 5;
             label4.Text = "DANH SÁCH KHOA";
-            // 
-            // buttonSearch
-            // 
-            buttonSearch.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            buttonSearch.Location = new Point(170, 120);
-            buttonSearch.Name = "buttonSearch";
-            buttonSearch.Size = new Size(100, 30);
-            buttonSearch.TabIndex = 3;
-            buttonSearch.Text = "TÌM KIẾM";
-            buttonSearch.UseVisualStyleBackColor = true;
             // 
             // textBoxSearch
             // 
@@ -199,7 +187,6 @@
             panel2.Controls.Add(buttonXN);
             panel2.Controls.Add(buttonHuy);
             panel2.Controls.Add(tableLayoutPanel1);
-            panel2.Enabled = false;
             panel2.Location = new Point(20, 440);
             panel2.Name = "panel2";
             panel2.Size = new Size(1344, 401);
@@ -251,7 +238,6 @@
         private Panel panel1;
         private Button buttonThem;
         private Label label4;
-        private Button buttonSearch;
         private TextBox textBoxSearch;
         private Label label2;
         public DataGridView dataGridView;

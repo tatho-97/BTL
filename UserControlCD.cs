@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace BTL
@@ -20,7 +14,6 @@ namespace BTL
         {
             InitializeComponent();
             Load += UC_Load;
-
             // Gán sự kiện nút
             buttonDMK.Click += ButtonDMK_Click;
             buttonXacNhan.Click += ButtonXacNhan_Click;
@@ -31,7 +24,7 @@ namespace BTL
         public void LoadAccount(string username)
         {
             _username = username;
-            textBoxMaSV.Text = _username;                // Username
+            textBoxMaSV.Text = _username;  // Username
 
             // Lấy mật khẩu từ DB
             var dt = _db.GetDataTable(
@@ -41,7 +34,7 @@ namespace BTL
             if (dt.Rows.Count > 0)
             {
                 _origPassword = dt.Rows[0]["Password"].ToString() ?? "";
-                textBox1.Text = _origPassword;         // Password
+                textBox1.Text = _origPassword;  // Password
             }
             else
             {
@@ -55,7 +48,7 @@ namespace BTL
             buttonDMK.Visible = true;
         }
 
-        // 2. Đổi mật khẩu: bật edit
+        // 2. Đổi mật khẩu: bật chế độ edit
         private void ButtonDMK_Click(object? sender, EventArgs e)
         {
             textBox1.Enabled = true;
@@ -107,11 +100,8 @@ namespace BTL
             buttonDMK.Visible = true;
         }
 
-        // Thiết lập ban đầu khi Load Control
-        private void UC_Load(object? sender, EventArgs e)
-        {
-            // Nếu muốn tự động nạp tài khoản của GV đang đăng nhập,
-            // gọi LoadAccount(maGV) tại đây hoặc từ Form cha.
-        }
+        // (Tuỳ chọn) Nếu muốn tự động nạp tài khoản GV đang đăng nhập:
+        // Gọi LoadAccount(maGV) tại đây hoặc từ Form cha.
+        private void UC_Load(object? sender, EventArgs e) { }
     }
 }

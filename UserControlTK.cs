@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace BTL
@@ -24,22 +18,14 @@ namespace BTL
             Load += UserControlTK_Load;
         }
 
-        // tên control trong Designer:
-        // dataGridView, textBox1(Username), textBox2(Password), textBox3(Role), textBox4(TenGV)
-        // buttonThem, buttonXoa, buttonDMK, buttonHuy, buttonXN, buttonSearch, textBoxSearch
-
         private void UserControlTK_Load(object? sender, EventArgs e)
         {
             LoadGrid();
-
             dataGridView.SelectionChanged += DataGridView_SelectionChanged;
-            buttonSearch.Click += DoSearch; textBoxSearch.TextChanged += DoSearch;
-
-            buttonThem.Click += ButtonThem_Click;   // thêm TK
-            buttonXoa.Click += ButtonXoa_Click;    // xoá
-            buttonDMK.Click += ButtonDMK_Click;    // đổi MK
-            buttonHuy.Click += ButtonHuy_Click;
-            buttonXN.Click += ButtonXN_Click;
+            textBoxSearch.TextChanged += buttonSearch_Click;
+            comboBoxGV.DisplayMember = "TenGV";
+            comboBoxGV.ValueMember = "MaGV";
+            comboBoxGV.DataSource = _db.GetAll<GiangVien>();
 
             if (dataGridView.Rows.Count > 0)
                 DataGridView_SelectionChanged(null!, EventArgs.Empty);
@@ -48,46 +34,36 @@ namespace BTL
         private void LoadGrid()
         {
             string filter = _viewTK?.RowFilter ?? "";
-            _dtTK = _db.GetAllTaiKhoan();
+            _dtTK = _db.GetAll<TaiKhoan>();
             _viewTK = new DataView(_dtTK) { RowFilter = filter };
             dataGridView.DataSource = _viewTK;
-            if (dataGridView.Columns.Contains("Username"))
                 dataGridView.Columns["Username"].HeaderText = "Tên đăng nhập";
-            if (dataGridView.Columns.Contains("Password"))
                 dataGridView.Columns["Password"].HeaderText = "Mật khẩu";
-            if (dataGridView.Columns.Contains("Role"))
                 dataGridView.Columns["Role"].HeaderText = "Phân quyền";
-            if (dataGridView.Columns.Contains("TenGV"))
                 dataGridView.Columns["TenGV"].HeaderText = "Giảng viên";
-
-            // — ẨN CỘT KHÓA NGOẠI (nếu có) —
-            if (dataGridView.Columns.Contains("MaGV"))
                 dataGridView.Columns["MaGV"].Visible = false;
-            if (dataGridView.Columns.Contains("MaKhoa"))
                 dataGridView.Columns["MaKhoa"].Visible = false;
 
-            // — TỰ ĐỘNG CO GIÃN CỘT CHO VỪA VỚI GRID — 
+            // Tự động co giãn cột
             dataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-
-            // — TUỲ CHỈNH TỈ LỆ CHIẾM CHỖ MỖI CỘT (FillWeight là phần trăm) —
-            dataGridView.Columns["Username"].FillWeight = 25;   // 25%
-            dataGridView.Columns["Password"].FillWeight = 25;   // 25%
-            dataGridView.Columns["Role"].FillWeight = 20;   // 20%
-            dataGridView.Columns["TenGV"].FillWeight = 30;   // 30%
+            // Tuỳ chỉnh tỉ lệ mỗi cột
+            dataGridView.Columns["Username"].FillWeight = 25;
+            dataGridView.Columns["Password"].FillWeight = 25;
+            dataGridView.Columns["Role"].FillWeight = 20;
+            dataGridView.Columns["TenGV"].FillWeight = 30;
         }
 
-        private void DataGridView_SelectionChanged(object? s, EventArgs e)
+        private void DataGridView_SelectionChanged(object? sender, EventArgs e)
         {
             if (dataGridView.CurrentRow == null) return;
             var row = ((DataRowView)dataGridView.CurrentRow.DataBoundItem).Row;
-
             textBox1.Text = row["Username"].ToString();
             textBox2.Text = row["Password"].ToString();
             textBox3.Text = row["Role"].ToString();
-            textBox4.Text = row["TenGV"].ToString();
+            comboBoxGV.Text = row["TenGV"].ToString();
         }
 
-        private void DoSearch(object? s, EventArgs e)
+        private void buttonSearch_Click(object? sender, EventArgs e)
         {
             string kw = textBoxSearch.Text.Replace("'", "''").Trim();
             _viewTK.RowFilter = string.IsNullOrEmpty(kw) ? "" :
@@ -95,38 +71,41 @@ namespace BTL
         }
 
         // ----------------------- CRUD buttons --------------------
-        private void ButtonThem_Click(object? s, EventArgs e)
+        private void buttonThem_Click(object? sender, EventArgs e)
         {
             _mode = Mode.Add;
-            ClearInput(); EnableEdit(true);
+            ClearInput();
+            ToggleEdit(true);
         }
 
-        private void ButtonDMK_Click(object? s, EventArgs e)
+        private void buttonDMK_Click(object? sender, EventArgs e)
         {
             if (dataGridView.CurrentRow == null) return;
             _mode = Mode.ChangePass;
-            textBox2.Enabled = true;         // chỉ cho sửa pass
+            textBox2.Enabled = true;         // chỉ cho sửa Password
             buttonXN.Visible = buttonHuy.Visible = true;
             buttonThem.Enabled = buttonXoa.Enabled = buttonDMK.Enabled = false;
         }
 
-        private void ButtonHuy_Click(object? s, EventArgs e)
+        private void buttonHuy_Click(object? sender, EventArgs e)
         {
             _mode = Mode.View;
-            EnableEdit(false);
+            ToggleEdit(false);
             buttonXN.Visible = buttonHuy.Visible = false;
             buttonThem.Enabled = buttonXoa.Enabled = buttonDMK.Enabled = true;
-            if (dataGridView.Rows.Count > 0) DataGridView_SelectionChanged(null!, EventArgs.Empty);
+            if (dataGridView.Rows.Count > 0)
+                DataGridView_SelectionChanged(null!, EventArgs.Empty);
         }
 
-        private void ButtonXN_Click(object? s, EventArgs e)
+        private void buttonXN_Click(object? sender, EventArgs e)
         {
             bool ok = false;
             if (_mode == Mode.Add)
             {
-                if (_db.ExistUsername(textBox1.Text))
+                if (_db.Exist<TaiKhoan>(textBox1.Text))
                 {
-                    MessageBox.Show("Username đã tồn tại!"); return;
+                    MessageBox.Show("Username đã tồn tại!");
+                    return;
                 }
                 var tk = new TaiKhoan
                 {
@@ -136,7 +115,7 @@ namespace BTL
                     MaGV = null,
                     MaKhoa = null
                 };
-                ok = _db.InsertTaiKhoan(tk);
+                ok = _db.Insert<TaiKhoan>(tk);
             }
             else if (_mode == Mode.ChangePass)
             {
@@ -144,36 +123,39 @@ namespace BTL
             }
 
             MessageBox.Show(ok ? "Thành công" : "Không thành công");
-            ButtonHuy_Click(null!, EventArgs.Empty);
+            buttonHuy_Click(null!, EventArgs.Empty);
             LoadGrid();
         }
 
-        private void ButtonXoa_Click(object? s, EventArgs e)
+        private void buttonXoa_Click(object? sender, EventArgs e)
         {
             if (dataGridView.CurrentRow == null) return;
             string user = textBox1.Text;
-            if (MessageBox.Show($"Xoá tài khoản {user}?", "Xác nhận", MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Warning) == DialogResult.Yes)
+            if (MessageBox.Show($"Xoá tài khoản {user}?", "Xác nhận",
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
             {
-                _db.DeleteTaiKhoan(user);
+                _db.Delete<TaiKhoan>(user);
                 LoadGrid();
             }
         }
 
         // ----------------------- helper ---------------------------
-        private void EnableEdit(bool enable)
+        private void ToggleEdit(bool enable)
         {
+            dataGridView.Enabled = !enable;
             textBox1.Enabled = (_mode == Mode.Add);
             textBox2.Enabled = enable;
-            textBox3.Enabled = enable;
-            // textBox4 (TenGV) chỉ view → không cho edit
-
+            textBox3.Enabled = (_mode == Mode.Add);
+            comboBoxGV.Enabled = (_mode == Mode.Add);
             buttonXN.Visible = buttonHuy.Visible = enable;
-            buttonThem.Enabled = buttonXoa.Enabled = buttonDMK.Enabled = !enable;
+            buttonThem.Visible = buttonXoa.Visible = buttonDMK.Visible = !enable;
         }
+
         private void ClearInput()
         {
-            textBox1.Clear(); textBox2.Clear(); textBox3.Clear(); textBox4.Clear();
+            textBox1.Clear();
+            textBox2.Clear();
+            textBox3.Clear();
         }
     }
 }

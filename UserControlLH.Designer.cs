@@ -144,9 +144,10 @@
             // 
             // buttonHuy
             // 
+            buttonHuy.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             buttonHuy.Location = new Point(154, 326);
             buttonHuy.Name = "buttonHuy";
-            buttonHuy.Size = new Size(100, 30);
+            buttonHuy.Size = new Size(75, 30);
             buttonHuy.TabIndex = 4;
             buttonHuy.Text = "HỦY";
             buttonHuy.UseVisualStyleBackColor = true;

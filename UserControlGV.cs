@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace BTL
@@ -25,108 +19,67 @@ namespace BTL
             Load += UserControlGV_Load;
         }
 
-        private void UserControlGV_Load(object? s, EventArgs e)
+        private void UserControlGV_Load(object? sender, EventArgs e)
         {
-            // -- KHOA
-            _dtKhoa = _db.GetAllKhoa();
+            // -- KHOA (ComboBox chọn khoa)
+            _dtKhoa = _db.GetAll<Khoa>();
             comboBoxKhoa.DisplayMember = "TenKhoa";
             comboBoxKhoa.ValueMember = "MaKhoa";
             comboBoxKhoa.DataSource = _dtKhoa;
             comboBoxKhoa.SelectedIndexChanged += ComboBoxKhoaChanged;
 
-            // -- GIẢNG VIÊN
-            _dtGV = _db.GetAllGiangVien();
+            // -- GIẢNG VIÊN (lưới danh sách giảng viên)
+            _dtGV = _db.GetAll<GiangVien>();
             _viewGV = _dtGV.DefaultView;
             dataGridView.DataSource = _viewGV;
             dataGridView.SelectionChanged += DataGridView_SelectionChanged;
 
-            // — ĐỔI TIÊU ĐỀ CỘT —
-            if (dataGridView.Columns.Contains("MaGV"))
+            // Đổi tiêu đề cột hiển thị
                 dataGridView.Columns["MaGV"].HeaderText = "Mã giảng viên";
-            if (dataGridView.Columns.Contains("TenGV"))
                 dataGridView.Columns["TenGV"].HeaderText = "Họ và tên";
-            if (dataGridView.Columns.Contains("TenKhoa"))
                 dataGridView.Columns["TenKhoa"].HeaderText = "Khoa";
-            if (dataGridView.Columns.Contains("TenMH"))
                 dataGridView.Columns["TenMH"].HeaderText = "Môn học";
 
-            // — ẨN CÁC CỘT MÃ KHÓA NGOẠI (nếu không cần hiển thị) —
-            if (dataGridView.Columns.Contains("MaKhoa"))
+            // Ẩn các cột mã khóa ngoại
                 dataGridView.Columns["MaKhoa"].Visible = false;
-            if (dataGridView.Columns.Contains("MaMH"))
                 dataGridView.Columns["MaMH"].Visible = false;
 
-            // — TỰ ĐỘNG ĐIỀU CHỈNH KÍCH THƯỚC —
+            // Tự động điều chỉnh kích thước cột
             dataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            // Tuỳ chỉnh tỉ lệ fill cho mỗi cột
-            dataGridView.Columns["MaGV"].FillWeight = 10;  // 10%
-            dataGridView.Columns["TenGV"].FillWeight = 30;  // 30%
-            if (dataGridView.Columns.Contains("TenKhoa"))
+            // Tùy chỉnh tỉ lệ fill cho mỗi cột
+            dataGridView.Columns["MaGV"].FillWeight = 10;
+            dataGridView.Columns["TenGV"].FillWeight = 30;
                 dataGridView.Columns["TenKhoa"].FillWeight = 30;
-            if (dataGridView.Columns.Contains("TenMH"))
                 dataGridView.Columns["TenMH"].FillWeight = 30;
 
-            // (Tùy chọn) nếu muốn cho hàng auto cao theo nội dung:
-            // dataGridView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
-
-
-            // -- TÌM KIẾM
-            buttonSearch.Click += ButtonSearch_Click;
+            // Sự kiện tìm kiếm
             textBoxSearch.TextChanged += ButtonSearch_Click;
-
-            // -- NÚT CRUD
-            //buttonThem.Click += ButtonThem_Click;
-            //buttonSua.Click += ButtonSua_Click;
-            //buttonXoa.Click += ButtonXoa_Click;
-            //buttonHuy.Click += ButtonHuy_Click;
-            //buttonXacNhan.Click += ButtonXacNhan_Click;
 
             if (dataGridView.Rows.Count > 0)
                 DataGridView_SelectionChanged(null!, EventArgs.Empty);
         }
 
-        private void ComboBoxKhoaChanged(object? s, EventArgs e)
+        private void ComboBoxKhoaChanged(object? sender, EventArgs e)
         {
-            if (comboBoxKhoa.SelectedValue == null) return;
-            string mk = comboBoxKhoa.SelectedValue.ToString()!;
-            _dtMon = _db.GetMonHocByKhoa(mk);
+            // Khi chọn khoa mới, cập nhật danh sách môn học tương ứng
+            string maKhoa = comboBoxKhoa.SelectedValue?.ToString() ?? "";
+            _dtMon = _db.GetMonHocByKhoa(maKhoa);
             comboBoxMH.DisplayMember = "TenMH";
             comboBoxMH.ValueMember = "MaMH";
             comboBoxMH.DataSource = _dtMon;
         }
 
-        private void DataGridView_SelectionChanged(object? s, EventArgs e)
+        private void DataGridView_SelectionChanged(object? sender, EventArgs e)
         {
             if (dataGridView.CurrentRow == null) return;
             var row = ((DataRowView)dataGridView.CurrentRow.DataBoundItem).Row;
-
             textBoxMaGV.Text = row["MaGV"].ToString();
             textBoxTenGV.Text = row["TenGV"].ToString();
-
             comboBoxKhoa.SelectedValue = row["MaKhoa"];
-            // sự kiện selectedIndexChanged sẽ tự load môn
             comboBoxMH.SelectedValue = row["MaMH"];
-
-            // Lớp giảng dạy
-            dataGridViewLH.DataSource =
-                _db.GetLopByGiangVien(row["MaGV"].ToString());
-            // — ĐỔI TIÊU ĐỀ CỘT —
-                dataGridViewLH.Columns["MaLop"].HeaderText = "Mã lớp";
-                dataGridViewLH.Columns["TenLop"].HeaderText = "Tên lớp";
-            dataGridViewLH.Columns["MaMH"].Visible = false; 
-
-
-            // — TỰ ĐỘNG ĐIỀU CHỈNH KÍCH THƯỚC —
-            // Cột sẽ tự động giãn đều ra hết vùng DataGridView
-            dataGridViewLH.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-
-            // (Tuỳ chọn) Bạn có thể điều chỉnh tỉ lệ “chiếm chỗ” của mỗi cột:
-            dataGridViewLH.Columns["MaLop"].FillWeight = 20;  // 20% 
-            dataGridViewLH.Columns["TenLop"].FillWeight = 50;  // 50%
-
         }
 
-        private void ButtonSearch_Click(object? s, EventArgs e)
+        private void ButtonSearch_Click(object? sender, EventArgs e)
         {
             string kw = textBoxSearch.Text.Replace("'", "''").Trim();
             _viewGV.RowFilter = string.IsNullOrEmpty(kw)
@@ -134,51 +87,48 @@ namespace BTL
                 : $"MaGV LIKE '%{kw}%' OR TenGV LIKE '%{kw}%'";
         }
 
-        private void RefreshGrid()
+        private void ClearInput()
         {
-            string filter = _viewGV.RowFilter;
-            _dtGV = _db.GetAllGiangVien();
-            _viewGV = new DataView(_dtGV) { RowFilter = filter };
-            dataGridView.DataSource = _viewGV;
+            textBoxMaGV.Clear();
+            textBoxTenGV.Clear();
+            if (_dtKhoa.Rows.Count > 0) comboBoxKhoa.SelectedIndex = 0;
+            if (_dtMon != null && _dtMon.Rows.Count > 0) comboBoxMH.SelectedIndex = 0;
         }
 
-        private void SetEdit(bool enable)
+        private void ToggleEdit(bool editing)
         {
-            textBoxTenGV.Enabled =
-            comboBoxKhoa.Enabled =
-            comboBoxMH.Enabled = enable;
+            dataGridView.Enabled = !editing;
+            textBoxTenGV.Enabled = comboBoxKhoa.Enabled = comboBoxMH.Enabled = editing;
             textBoxMaGV.Enabled = (_mode == Mode.Add);
+            buttonXacNhan.Visible = buttonHuy.Visible = editing;
+            buttonSua.Visible = buttonThem.Visible = buttonXoa.Visible = !editing;
         }
 
-        private void buttonThem_Click(object sender, EventArgs e)
+        // === NÚT THÊM/SỬA/XÓA/HỦY/ XÁC NHẬN ===
+
+        private void buttonThem_Click(object? sender, EventArgs e)
         {
             _mode = Mode.Add;
             ClearInput();
-            SetEdit(true);
-            ToggleButtons(editing: true);
+            ToggleEdit(true);
         }
 
-        private void buttonXoa_Click(object sender, EventArgs e)
+        private void buttonSua_Click(object? sender, EventArgs e)
         {
             if (dataGridView.CurrentRow == null) return;
-            string ma = textBoxMaGV.Text;
-            if (MessageBox.Show($"Xoá GV {ma} ?", "Xác nhận",
-                MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
-            {
-                _db.DeleteGiangVien(ma);
-                RefreshGrid();
-            }
+            _mode = Mode.Edit;
+            ToggleEdit(true);
         }
 
-        private void buttonHuy_Click(object sender, EventArgs e)
+        private void buttonHuy_Click(object? sender, EventArgs e)
         {
             _mode = Mode.View;
-            SetEdit(false);
-            ToggleButtons(editing: false);
-            DataGridView_SelectionChanged(null!, EventArgs.Empty);
+            ToggleEdit(false);
+            if (dataGridView.CurrentRow != null)
+                DataGridView_SelectionChanged(null!, EventArgs.Empty);
         }
 
-        private void buttonXacNhan_Click(object sender, EventArgs e)
+        private void buttonXacNhan_Click(object? sender, EventArgs e)
         {
             var gv = new GiangVien
             {
@@ -187,40 +137,43 @@ namespace BTL
                 MaKhoa = comboBoxKhoa.SelectedValue?.ToString(),
                 MaMH = comboBoxMH.SelectedValue?.ToString()
             };
-
+            bool ok = false;
             if (_mode == Mode.Add)
             {
-                if (_db.ExistMaGV(gv.MaGV))
+                if (_db.Exist<GiangVien>(gv.MaGV))
                 {
                     MessageBox.Show("Mã giảng viên đã tồn tại!");
-                    textBoxMaGV.Focus(); return;
+                    return;
                 }
-                _db.InsertGiangVien(gv);
+                ok = _db.Insert<GiangVien>(gv);
             }
             else if (_mode == Mode.Edit)
-                _db.UpdateGiangVien(gv);
+            {
+                ok = _db.Update<GiangVien>(gv);
+            }
+            MessageBox.Show(ok ? "Lưu thành công" : "Thao tác thất bại!");
             buttonHuy_Click(null!, EventArgs.Empty);
-            RefreshGrid();
+            LoadGrid();
         }
 
-        private void buttonSua_Click(object sender, EventArgs e)
+        private void buttonXoa_Click(object? sender, EventArgs e)
         {
             if (dataGridView.CurrentRow == null) return;
-            _mode = Mode.Edit;
-            SetEdit(true);
-            ToggleButtons(editing: true);
+            string ma = textBoxMaGV.Text;
+            if (MessageBox.Show($"Xoá giảng viên {ma}?", "Xác nhận", MessageBoxButtons.YesNo,
+                                MessageBoxIcon.Warning) == DialogResult.Yes)
+            {
+                _db.Delete<GiangVien>(ma);
+                LoadGrid();
+            }
         }
 
-        private void ToggleButtons(bool editing)
+        private void LoadGrid()
         {
-            buttonXacNhan.Visible = buttonHuy.Visible = editing;
-            buttonThem.Enabled = buttonSua.Enabled = buttonXoa.Enabled = !editing;
-            buttonThem.Visible = buttonSua.Visible = buttonXoa.Visible = !editing;
-        }
-        private void ClearInput()
-        {
-            textBoxMaGV.Clear(); textBoxTenGV.Clear();
-            comboBoxKhoa.SelectedIndex = 0;
+            string filter = _viewGV?.RowFilter ?? "";
+            _dtGV = _db.GetAll<GiangVien>();
+            _viewGV = new DataView(_dtGV) { RowFilter = filter };
+            dataGridView.DataSource = _viewGV;
         }
     }
 }

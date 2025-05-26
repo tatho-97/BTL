@@ -32,7 +32,6 @@
             panel1 = new Panel();
             buttonThem = new Button();
             label4 = new Label();
-            buttonSearch = new Button();
             textBoxSearch = new TextBox();
             label2 = new Label();
             dataGridView = new DataGridView();
@@ -64,7 +63,6 @@
             panel1.BackColor = SystemColors.ControlLightLight;
             panel1.Controls.Add(buttonThem);
             panel1.Controls.Add(label4);
-            panel1.Controls.Add(buttonSearch);
             panel1.Controls.Add(textBoxSearch);
             panel1.Controls.Add(label2);
             panel1.Controls.Add(dataGridView);
@@ -92,16 +90,6 @@
             label4.Size = new Size(186, 21);
             label4.TabIndex = 5;
             label4.Text = "DANH SÁCH MÔN HỌC";
-            // 
-            // buttonSearch
-            // 
-            buttonSearch.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            buttonSearch.Location = new Point(170, 120);
-            buttonSearch.Name = "buttonSearch";
-            buttonSearch.Size = new Size(100, 30);
-            buttonSearch.TabIndex = 3;
-            buttonSearch.Text = "TÌM KIẾM";
-            buttonSearch.UseVisualStyleBackColor = true;
             // 
             // textBoxSearch
             // 
@@ -178,6 +166,7 @@
             dataGridViewGV.Location = new Point(525, 58);
             dataGridViewGV.Name = "dataGridViewGV";
             dataGridViewGV.ReadOnly = true;
+            dataGridViewGV.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dataGridViewGV.Size = new Size(800, 298);
             dataGridViewGV.TabIndex = 5;
             // 
@@ -190,16 +179,19 @@
             buttonXoa.TabIndex = 1;
             buttonXoa.Text = "XÓA";
             buttonXoa.UseVisualStyleBackColor = true;
+            buttonXoa.Click += buttonXoa_Click;
             // 
             // buttonHuy
             // 
+            buttonHuy.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             buttonHuy.Location = new Point(154, 326);
             buttonHuy.Name = "buttonHuy";
-            buttonHuy.Size = new Size(100, 30);
+            buttonHuy.Size = new Size(75, 30);
             buttonHuy.TabIndex = 4;
             buttonHuy.Text = "HỦY";
             buttonHuy.UseVisualStyleBackColor = true;
             buttonHuy.Visible = false;
+            buttonHuy.Click += buttonHuy_Click;
             // 
             // buttonSua
             // 
@@ -210,6 +202,7 @@
             buttonSua.TabIndex = 2;
             buttonSua.Text = "SỬA";
             buttonSua.UseVisualStyleBackColor = true;
+            buttonSua.Click += buttonSua_Click;
             // 
             // buttonXacNhan
             // 
@@ -221,6 +214,7 @@
             buttonXacNhan.Text = "XÁC NHẬN";
             buttonXacNhan.UseVisualStyleBackColor = true;
             buttonXacNhan.Visible = false;
+            buttonXacNhan.Click += buttonXacNhan_Click;
             // 
             // tableLayoutPanel
             // 
@@ -322,6 +316,7 @@
             // comboBoxKhoa
             // 
             comboBoxKhoa.Dock = DockStyle.Fill;
+            comboBoxKhoa.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBoxKhoa.Enabled = false;
             comboBoxKhoa.FormattingEnabled = true;
             comboBoxKhoa.Location = new Point(133, 226);
@@ -350,12 +345,16 @@
             ResumeLayout(false);
         }
 
+        private void ButtonHuy_Click(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
 
         private Panel panel1;
         private Button buttonThem;
         private Label label4;
-        private Button buttonSearch;
         private TextBox textBoxSearch;
         private Label label2;
         public DataGridView dataGridView;

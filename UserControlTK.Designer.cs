@@ -32,7 +32,6 @@
             buttonXoa = new Button();
             buttonThem = new Button();
             label4 = new Label();
-            buttonSearch = new Button();
             textBoxSearch = new TextBox();
             label2 = new Label();
             dataGridView = new DataGridView();
@@ -48,7 +47,7 @@
             textBox1 = new TextBox();
             textBox2 = new TextBox();
             textBox3 = new TextBox();
-            textBox4 = new TextBox();
+            comboBoxGV = new ComboBox();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridView).BeginInit();
             panel2.SuspendLayout();
@@ -61,7 +60,6 @@
             panel1.Controls.Add(buttonXoa);
             panel1.Controls.Add(buttonThem);
             panel1.Controls.Add(label4);
-            panel1.Controls.Add(buttonSearch);
             panel1.Controls.Add(textBoxSearch);
             panel1.Controls.Add(label2);
             panel1.Controls.Add(dataGridView);
@@ -79,6 +77,7 @@
             buttonXoa.TabIndex = 7;
             buttonXoa.Text = "XÓA";
             buttonXoa.UseVisualStyleBackColor = true;
+            buttonXoa.Click += buttonXN_Click;
             // 
             // buttonThem
             // 
@@ -89,6 +88,7 @@
             buttonThem.TabIndex = 6;
             buttonThem.Text = "THÊM";
             buttonThem.UseVisualStyleBackColor = true;
+            buttonThem.Click += buttonThem_Click;
             // 
             // label4
             // 
@@ -99,16 +99,6 @@
             label4.Size = new Size(194, 21);
             label4.TabIndex = 5;
             label4.Text = "DANH SÁCH TÀI KHOẢN";
-            // 
-            // buttonSearch
-            // 
-            buttonSearch.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            buttonSearch.Location = new Point(170, 120);
-            buttonSearch.Name = "buttonSearch";
-            buttonSearch.Size = new Size(100, 30);
-            buttonSearch.TabIndex = 3;
-            buttonSearch.Text = "TÌM KIẾM";
-            buttonSearch.UseVisualStyleBackColor = true;
             // 
             // textBoxSearch
             // 
@@ -176,6 +166,7 @@
             buttonHuy.Text = "HỦY";
             buttonHuy.UseVisualStyleBackColor = true;
             buttonHuy.Visible = false;
+            buttonHuy.Click += buttonHuy_Click;
             // 
             // buttonDMK
             // 
@@ -199,7 +190,7 @@
             tableLayoutPanel1.Controls.Add(textBox1, 1, 0);
             tableLayoutPanel1.Controls.Add(textBox2, 1, 1);
             tableLayoutPanel1.Controls.Add(textBox3, 1, 2);
-            tableLayoutPanel1.Controls.Add(textBox4, 1, 3);
+            tableLayoutPanel1.Controls.Add(comboBoxGV, 1, 3);
             tableLayoutPanel1.Location = new Point(445, 30);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
             tableLayoutPanel1.RowCount = 4;
@@ -276,15 +267,15 @@
             textBox3.Size = new Size(275, 29);
             textBox3.TabIndex = 6;
             // 
-            // textBox4
+            // comboBoxGV
             // 
-            textBox4.BorderStyle = BorderStyle.FixedSingle;
-            textBox4.Dock = DockStyle.Fill;
-            textBox4.Enabled = false;
-            textBox4.Location = new Point(135, 174);
-            textBox4.Name = "textBox4";
-            textBox4.Size = new Size(275, 29);
-            textBox4.TabIndex = 7;
+            comboBoxGV.Dock = DockStyle.Fill;
+            comboBoxGV.Enabled = false;
+            comboBoxGV.FormattingEnabled = true;
+            comboBoxGV.Location = new Point(135, 174);
+            comboBoxGV.Name = "comboBoxGV";
+            comboBoxGV.Size = new Size(275, 29);
+            comboBoxGV.TabIndex = 7;
             // 
             // UserControlTK
             // 
@@ -311,7 +302,6 @@
         private Button buttonXoa;
         private Button buttonThem;
         private Label label4;
-        private Button buttonSearch;
         private TextBox textBoxSearch;
         private Label label2;
         public DataGridView dataGridView;
@@ -324,9 +314,9 @@
         private TextBox textBox1;
         private TextBox textBox2;
         private TextBox textBox3;
-        private TextBox textBox4;
         private Button buttonXN;
         private Button buttonHuy;
         private Button buttonDMK;
+        private ComboBox comboBoxGV;
     }
 }
