@@ -48,10 +48,10 @@
             label5 = new Label();
             label8 = new Label();
             label11 = new Label();
-            textBoxMaSV = new TextBox();
-            textBoxTenSV = new TextBox();
-            comboBox1 = new ComboBox();
-            comboBox2 = new ComboBox();
+            textBoxMaGV = new TextBox();
+            textBoxTenGV = new TextBox();
+            comboBoxKhoa = new ComboBox();
+            comboBoxMH = new ComboBox();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridView).BeginInit();
             panel2.SuspendLayout();
@@ -236,10 +236,10 @@
             tableLayoutPanel.Controls.Add(label5, 0, 1);
             tableLayoutPanel.Controls.Add(label8, 0, 2);
             tableLayoutPanel.Controls.Add(label11, 0, 3);
-            tableLayoutPanel.Controls.Add(textBoxMaSV, 1, 0);
-            tableLayoutPanel.Controls.Add(textBoxTenSV, 1, 1);
-            tableLayoutPanel.Controls.Add(comboBox1, 1, 2);
-            tableLayoutPanel.Controls.Add(comboBox2, 1, 3);
+            tableLayoutPanel.Controls.Add(textBoxMaGV, 1, 0);
+            tableLayoutPanel.Controls.Add(textBoxTenGV, 1, 1);
+            tableLayoutPanel.Controls.Add(comboBoxKhoa, 1, 2);
+            tableLayoutPanel.Controls.Add(comboBoxMH, 1, 3);
             tableLayoutPanel.Location = new Point(20, 20);
             tableLayoutPanel.Name = "tableLayoutPanel";
             tableLayoutPanel.RowCount = 4;
@@ -291,47 +291,47 @@
             label11.TabIndex = 9;
             label11.Text = "Môn học:";
             // 
-            // textBoxMaSV
+            // textBoxMaGV
             // 
-            textBoxMaSV.BorderStyle = BorderStyle.FixedSingle;
-            textBoxMaSV.Dock = DockStyle.Fill;
-            textBoxMaSV.Enabled = false;
-            textBoxMaSV.Font = new Font("Segoe UI", 12F);
-            textBoxMaSV.Location = new Point(133, 3);
-            textBoxMaSV.Name = "textBoxMaSV";
-            textBoxMaSV.Size = new Size(314, 29);
-            textBoxMaSV.TabIndex = 12;
+            textBoxMaGV.BorderStyle = BorderStyle.FixedSingle;
+            textBoxMaGV.Dock = DockStyle.Fill;
+            textBoxMaGV.Enabled = false;
+            textBoxMaGV.Font = new Font("Segoe UI", 12F);
+            textBoxMaGV.Location = new Point(133, 3);
+            textBoxMaGV.Name = "textBoxMaGV";
+            textBoxMaGV.Size = new Size(314, 29);
+            textBoxMaGV.TabIndex = 12;
             // 
-            // textBoxTenSV
+            // textBoxTenGV
             // 
-            textBoxTenSV.BorderStyle = BorderStyle.FixedSingle;
-            textBoxTenSV.Dock = DockStyle.Fill;
-            textBoxTenSV.Enabled = false;
-            textBoxTenSV.Font = new Font("Segoe UI", 12F);
-            textBoxTenSV.Location = new Point(133, 78);
-            textBoxTenSV.Name = "textBoxTenSV";
-            textBoxTenSV.Size = new Size(314, 29);
-            textBoxTenSV.TabIndex = 13;
+            textBoxTenGV.BorderStyle = BorderStyle.FixedSingle;
+            textBoxTenGV.Dock = DockStyle.Fill;
+            textBoxTenGV.Enabled = false;
+            textBoxTenGV.Font = new Font("Segoe UI", 12F);
+            textBoxTenGV.Location = new Point(133, 78);
+            textBoxTenGV.Name = "textBoxTenGV";
+            textBoxTenGV.Size = new Size(314, 29);
+            textBoxTenGV.TabIndex = 13;
             // 
-            // comboBox1
+            // comboBoxKhoa
             // 
-            comboBox1.Dock = DockStyle.Fill;
-            comboBox1.Enabled = false;
-            comboBox1.FormattingEnabled = true;
-            comboBox1.Location = new Point(133, 152);
-            comboBox1.Name = "comboBox1";
-            comboBox1.Size = new Size(314, 29);
-            comboBox1.TabIndex = 14;
+            comboBoxKhoa.Dock = DockStyle.Fill;
+            comboBoxKhoa.Enabled = false;
+            comboBoxKhoa.FormattingEnabled = true;
+            comboBoxKhoa.Location = new Point(133, 152);
+            comboBoxKhoa.Name = "comboBoxKhoa";
+            comboBoxKhoa.Size = new Size(314, 29);
+            comboBoxKhoa.TabIndex = 14;
             // 
-            // comboBox2
+            // comboBoxMH
             // 
-            comboBox2.Dock = DockStyle.Fill;
-            comboBox2.Enabled = false;
-            comboBox2.FormattingEnabled = true;
-            comboBox2.Location = new Point(133, 226);
-            comboBox2.Name = "comboBox2";
-            comboBox2.Size = new Size(314, 29);
-            comboBox2.TabIndex = 15;
+            comboBoxMH.Dock = DockStyle.Fill;
+            comboBoxMH.Enabled = false;
+            comboBoxMH.FormattingEnabled = true;
+            comboBoxMH.Location = new Point(133, 226);
+            comboBoxMH.Name = "comboBoxMH";
+            comboBoxMH.Size = new Size(314, 29);
+            comboBoxMH.TabIndex = 15;
             // 
             // UserControlGV
             // 
@@ -373,10 +373,10 @@
         private Label label5;
         private Label label8;
         private Label label11;
-        private TextBox textBoxMaSV;
-        private TextBox textBoxTenSV;
-        private ComboBox comboBox1;
-        private ComboBox comboBox2;
+        private TextBox textBoxMaGV;
+        private TextBox textBoxTenGV;
+        private ComboBox comboBoxKhoa;
+        private ComboBox comboBoxMH;
         private Label label3;
         private DataGridView dataGridViewLH;
     }

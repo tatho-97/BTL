@@ -91,7 +91,7 @@ namespace BTL
             _dtMH = _db.GetAllMonHoc_Detail();
             _viewMH = new DataView(_dtMH) { RowFilter = filter };
             dataGridView.DataSource = _viewMH;
-            if (dataGridView.Rows.Count > 0) DataGridView_SelectionChanged(null!, EventArgs.Empty);
+            //if (dataGridView.Rows.Count > 0) DataGridView_SelectionChanged(null!, EventArgs.Empty);
         }
 
         // ------------------------- BUTTON HANDLERS -------------------------
@@ -124,15 +124,12 @@ namespace BTL
                 TinChi = int.TryParse(textBoxTC.Text, out var tc) ? tc : 0,
                 MaKhoa = comboBoxKhoa.SelectedValue?.ToString()
             };
-            bool ok = false;
             if (_mode == Mode.Add)
             {
                 if (_db.ExistMaMH(mh.MaMH)) { MessageBox.Show("Mã MH trùng!"); return; }
-                ok = _db.InsertMonHoc(mh);
+                _db.InsertMonHoc(mh);
             }
-            else if (_mode == Mode.Edit) ok = _db.UpdateMonHoc(mh);
-
-            MessageBox.Show(ok ? "Lưu thành công" : "Thao tác thất bại");
+            else if (_mode == Mode.Edit) _db.UpdateMonHoc(mh);
             ButtonHuy_Click(null!, EventArgs.Empty);
             RefreshGrid();
         }

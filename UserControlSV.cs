@@ -47,7 +47,6 @@ namespace BTL
                 DataGridView_SelectionChanged(null!, EventArgs.Empty);
         }
 
-
         private void DataGridView_SelectionChanged(object? sender, EventArgs e)
         {
             if (_binding) return;                 // đang binding, bỏ qua
@@ -182,17 +181,14 @@ namespace BTL
         {
             if (dataGridView.CurrentRow == null) return;
             string ma = textBoxMaSV.Text;
-
             if (MessageBox.Show($"Xoá sinh viên {ma} ?", "Xác nhận",
                 MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
             {
-                bool ok = _db.DeleteSinhVien(ma);
-                MessageBox.Show(ok ? "Đã xoá!" : "Không xoá được!");
+                _db.DeleteSinhVien(ma);
                 RefreshSinhVienGrid();
             }
         }
 
-        // ==== TIỆN ÍCH ==============================================================
         private void ClearInput()
         {
             textBoxMaSV.Clear(); textBoxTenSV.Clear(); textBoxDiaChi.Clear();
@@ -203,23 +199,10 @@ namespace BTL
 
         private void RefreshSinhVienGrid()
         {
-            // 1) Ghi nhớ bộ lọc hiện tại (nếu có)
             string filter = _viewSinhVien?.RowFilter ?? "";
-
-
-            // 2) Lấy dữ liệu mới
             _dtSinhVien = _db.GetAllSinhVien();
-
-            // 3) Tạo DataView mới & áp dụng lại filter
-            _viewSinhVien = new DataView(_dtSinhVien);
-            _viewSinhVien.RowFilter = filter;
-
-            // 4) Bind trở lại lưới
+            _viewSinhVien = new DataView(_dtSinhVien) { RowFilter = filter };
             dataGridView.DataSource = _viewSinhVien;
-
-            // 5) Chọn lại dòng đầu (tuỳ ý)
-            if (dataGridView.Rows.Count > 0)
-                DataGridView_SelectionChanged(null!, EventArgs.Empty);
         }
     }
 }

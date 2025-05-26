@@ -11,7 +11,6 @@ namespace BTL
 {
     public class Database
     {
-        // đặt file .db cạnh .exe (bin\Debug\…)
         private readonly string connectionString =
             $"Data Source={AppDomain.CurrentDomain.BaseDirectory}\\PMQLSVDH.db;";
 
@@ -56,8 +55,7 @@ namespace BTL
             finally { Close(); }
         }
 
-        public DataTable GetDataTable(string sql,
-                                      params (string name, object value)[] prms)
+        public DataTable GetDataTable(string sql, params (string name, object value)[] prms)
         {
             var dt = new DataTable();
             try

@@ -29,10 +29,10 @@ namespace BTL
         {
             // -- KHOA
             _dtKhoa = _db.GetAllKhoa();
-            comboBox1.DisplayMember = "TenKhoa";
-            comboBox1.ValueMember = "MaKhoa";
-            comboBox1.DataSource = _dtKhoa;
-            comboBox1.SelectedIndexChanged += ComboBoxKhoaChanged;
+            comboBoxKhoa.DisplayMember = "TenKhoa";
+            comboBoxKhoa.ValueMember = "MaKhoa";
+            comboBoxKhoa.DataSource = _dtKhoa;
+            comboBoxKhoa.SelectedIndexChanged += ComboBoxKhoaChanged;
 
             // -- GIẢNG VIÊN
             _dtGV = _db.GetAllGiangVien();
@@ -57,12 +57,12 @@ namespace BTL
 
         private void ComboBoxKhoaChanged(object? s, EventArgs e)
         {
-            if (comboBox1.SelectedValue == null) return;
-            string mk = comboBox1.SelectedValue.ToString()!;
+            if (comboBoxKhoa.SelectedValue == null) return;
+            string mk = comboBoxKhoa.SelectedValue.ToString()!;
             _dtMon = _db.GetMonHocByKhoa(mk);
-            comboBox2.DisplayMember = "TenMH";
-            comboBox2.ValueMember = "MaMH";
-            comboBox2.DataSource = _dtMon;
+            comboBoxMH.DisplayMember = "TenMH";
+            comboBoxMH.ValueMember = "MaMH";
+            comboBoxMH.DataSource = _dtMon;
         }
 
         private void DataGridView_SelectionChanged(object? s, EventArgs e)
@@ -70,12 +70,12 @@ namespace BTL
             if (dataGridView.CurrentRow == null) return;
             var row = ((DataRowView)dataGridView.CurrentRow.DataBoundItem).Row;
 
-            textBoxMaSV.Text = row["MaGV"].ToString();
-            textBoxTenSV.Text = row["TenGV"].ToString();
+            textBoxMaGV.Text = row["MaGV"].ToString();
+            textBoxTenGV.Text = row["TenGV"].ToString();
 
-            comboBox1.SelectedValue = row["MaKhoa"];
+            comboBoxKhoa.SelectedValue = row["MaKhoa"];
             // sự kiện selectedIndexChanged sẽ tự load môn
-            comboBox2.SelectedValue = row["MaMH"];
+            comboBoxMH.SelectedValue = row["MaMH"];
 
             // Lớp giảng dạy
             dataGridViewLH.DataSource =
@@ -100,10 +100,10 @@ namespace BTL
 
         private void SetEdit(bool enable)
         {
-            textBoxTenSV.Enabled =
-            comboBox1.Enabled =
-            comboBox2.Enabled = enable;
-            textBoxMaSV.Enabled = (_mode == Mode.Add);
+            textBoxTenGV.Enabled =
+            comboBoxKhoa.Enabled =
+            comboBoxMH.Enabled = enable;
+            textBoxMaGV.Enabled = (_mode == Mode.Add);
         }
 
         private void buttonThem_Click(object sender, EventArgs e)
@@ -117,7 +117,7 @@ namespace BTL
         private void buttonXoa_Click(object sender, EventArgs e)
         {
             if (dataGridView.CurrentRow == null) return;
-            string ma = textBoxMaSV.Text;
+            string ma = textBoxMaGV.Text;
             if (MessageBox.Show($"Xoá GV {ma} ?", "Xác nhận",
                 MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
             {
@@ -138,27 +138,23 @@ namespace BTL
         {
             var gv = new GiangVien
             {
-                MaGV = textBoxMaSV.Text.Trim(),
-                TenGV = textBoxTenSV.Text.Trim(),
-                MaKhoa = comboBox1.SelectedValue?.ToString(),
-                MaMH = comboBox2.SelectedValue?.ToString()
+                MaGV = textBoxMaGV.Text.Trim(),
+                TenGV = textBoxTenGV.Text.Trim(),
+                MaKhoa = comboBoxKhoa.SelectedValue?.ToString(),
+                MaMH = comboBoxMH.SelectedValue?.ToString()
             };
-
-            bool ok = false;
 
             if (_mode == Mode.Add)
             {
                 if (_db.ExistMaGV(gv.MaGV))
                 {
                     MessageBox.Show("Mã giảng viên đã tồn tại!");
-                    textBoxMaSV.Focus(); return;
+                    textBoxMaGV.Focus(); return;
                 }
-                ok = _db.InsertGiangVien(gv);
+                _db.InsertGiangVien(gv);
             }
             else if (_mode == Mode.Edit)
-                ok = _db.UpdateGiangVien(gv);
-
-            MessageBox.Show(ok ? "Lưu thành công" : "Lỗi!");
+                _db.UpdateGiangVien(gv);
             buttonHuy_Click(null!, EventArgs.Empty);
             RefreshGrid();
         }
@@ -179,8 +175,8 @@ namespace BTL
         }
         private void ClearInput()
         {
-            textBoxMaSV.Clear(); textBoxTenSV.Clear();
-            comboBox1.SelectedIndex = 0;
+            textBoxMaGV.Clear(); textBoxTenGV.Clear();
+            comboBoxKhoa.SelectedIndex = 0;
         }
     }
 }
