@@ -36,6 +36,30 @@ namespace BTL
             _viewLop = _dtLop.DefaultView;
             dataGridView.DataSource = _viewLop;
             dataGridView.SelectionChanged += DataGridView_SelectionChanged;
+            // — ĐỔI TIÊU ĐỀ CỘT —
+            if (dataGridView.Columns.Contains("MaLop"))
+                dataGridView.Columns["MaLop"].HeaderText = "Mã lớp";
+            if (dataGridView.Columns.Contains("TenLop"))
+                dataGridView.Columns["TenLop"].HeaderText = "Tên lớp";
+            // nếu view có luôn cả cột Khoa
+            if (dataGridView.Columns.Contains("TenKhoa"))
+                dataGridView.Columns["TenKhoa"].HeaderText = "Khoa";
+
+            // — ẨN CỘT KHÓA NGOẠI (nếu có) —
+            if (dataGridView.Columns.Contains("MaKhoa"))
+                dataGridView.Columns["MaKhoa"].Visible = false;
+
+            // — TỰ ĐỘNG CO GIÃN CỘT CHO VỪA VỚI GRID — 
+            dataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+
+            // — TUỲ CHỈNH TỈ LỆ CHIẾM CHỖ MỖI CỘT (FillWeight là phần trăm) —
+            dataGridView.Columns["MaLop"].FillWeight = 20;   // 20%
+            dataGridView.Columns["TenLop"].FillWeight = 50;   // 50%
+            if (dataGridView.Columns.Contains("TenKhoa"))
+                dataGridView.Columns["TenKhoa"].FillWeight = 30;   // 30%
+
+            // (Tuỳ chọn) Nếu bạn muốn dòng tự động tăng chiều cao theo nội dung:
+            // dataGridView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
 
             // Tìm kiếm
             buttonSearch.Click += DoSearch;
@@ -67,8 +91,31 @@ namespace BTL
             textBoxTenLop.Text = row["TenLop"].ToString();
 
             string maLop = row["MaLop"].ToString();
-            dataGridViewSV.DataSource = _db.GetSinhVienByLop(maLop);
+            dataGridViewSV.DataSource = _db.GetSinhVienByLop(maLop);    // Đổi tiêu đề
+            if (dataGridViewSV.Columns.Contains("MaSV"))
+                dataGridViewSV.Columns["MaSV"].HeaderText = "Mã sinh viên";
+            if (dataGridViewSV.Columns.Contains("TenSV"))
+                dataGridViewSV.Columns["TenSV"].HeaderText = "Họ và tên";
+            if (dataGridViewSV.Columns.Contains("NgaySinh"))
+                dataGridViewSV.Columns["NgaySinh"].HeaderText = "Ngày sinh";
+            if (dataGridViewSV.Columns.Contains("GioiTinh"))
+                dataGridViewSV.Columns["GioiTinh"].HeaderText = "Giới tính";
+            if (dataGridViewSV.Columns.Contains("DiaChi"))
+                dataGridViewSV.Columns["DiaChi"].HeaderText = "Địa chỉ";
+            dataGridViewSV.Columns["NgaySinh"].Visible = false;
+            dataGridViewSV.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+           
+            
             dataGridViewMH.DataSource = _db.GetMonByLop(maLop);
+            if (dataGridViewMH.Columns.Contains("MaMH"))
+                dataGridViewMH.Columns["MaMH"].HeaderText = "Mã môn học";
+            if (dataGridViewMH.Columns.Contains("TenMH"))
+                dataGridViewMH.Columns["TenMH"].HeaderText = "Tên môn học";
+            if (dataGridViewMH.Columns.Contains("TenGV"))
+                dataGridViewMH.Columns["TenGV"].HeaderText = "Giảng viên";
+            dataGridViewMH.Columns["MaGV"].Visible = false;
+            dataGridViewMH.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+
         }
 
         // ------------------------------------------------------------------

@@ -38,6 +38,30 @@ namespace BTL
             _viewSinhVien = _dtSinhVien.DefaultView;      // <-- NEW
             dataGridView.DataSource = _viewSinhVien;      // <-- sửa
 
+            // Đổi tiêu đề cột cho dễ nhìn
+            dataGridView.Columns["MaSV"].HeaderText = "Mã sinh viên";
+            dataGridView.Columns["TenSV"].HeaderText = "Họ và tên";
+            dataGridView.Columns["NgaySinh"].HeaderText = "Ngày sinh";
+            dataGridView.Columns["GioiTinh"].HeaderText = "Giới tính";
+            dataGridView.Columns["DiaChi"].HeaderText = "Địa chỉ";
+            dataGridView.Columns["LopHoc"].HeaderText = "Lớp học";
+
+            // Cho phép tự động co giãn cột để vừa với DataGridView
+            dataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dataGridView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
+
+            // (Tuỳ chọn) Đặt tỉ lệ fill riêng cho mỗi cột
+            dataGridView.Columns["MaSV"].FillWeight = 10;   // 10%
+            dataGridView.Columns["TenSV"].FillWeight = 30;   // 30%
+            dataGridView.Columns["NgaySinh"].FillWeight = 15;   // 15%
+            dataGridView.Columns["GioiTinh"].FillWeight = 10;   // 10%
+            dataGridView.Columns["DiaChi"].FillWeight = 20;   // 20%
+            dataGridView.Columns["LopHoc"].FillWeight = 15;   // 15%
+
+            // Ẩn cột MaLop (khóa ngoại không cần hiển thị)
+            if (dataGridView.Columns.Contains("MaLop"))
+                dataGridView.Columns["MaLop"].Visible = false;
+
             // 3. Sự kiện
             dataGridView.SelectionChanged += DataGridView_SelectionChanged;
             buttonSearch.Click += buttonSearch_Click;          // <-- NEW

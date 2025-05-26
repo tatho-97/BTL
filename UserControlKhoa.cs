@@ -28,7 +28,17 @@ namespace BTL
             _dt = _db.GetAllKhoa_Detail();
             _view = _dt.DefaultView;
             dataGridView.DataSource = _view;
+            dataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
 
+            // Đổi tiêu đề cột
+            if (dataGridView.Columns.Contains("MaKhoa"))
+                dataGridView.Columns["MaKhoa"].HeaderText = "Mã khoa";
+            if (dataGridView.Columns.Contains("TenKhoa"))
+                dataGridView.Columns["TenKhoa"].HeaderText = "Tên khoa";
+
+            // (Tuỳ chọn) Tỉ lệ fill của mỗi cột
+            dataGridView.Columns["MaKhoa"].FillWeight = 30;  // 30%
+            dataGridView.Columns["TenKhoa"].FillWeight = 70;  // 70%
             dataGridView.SelectionChanged += DataGridView_SelectionChanged;
             buttonSearch.Click += Search;
             textBoxSearch.TextChanged += Search;

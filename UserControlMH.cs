@@ -32,6 +32,21 @@ namespace BTL
             _dtMH = _db.GetAllMonHoc_Detail();
             _viewMH = _dtMH.DefaultView;
             dataGridView.DataSource = _viewMH;
+            // — ĐỔI TIÊU ĐỀ CỘT & ẨN CỘT —
+            dataGridView.Columns["MaMH"].HeaderText = "Mã môn học";
+            dataGridView.Columns["TenMH"].HeaderText = "Tên môn học";
+            dataGridView.Columns["TinChi"].HeaderText = "Tín chỉ";
+            dataGridView.Columns["TenKhoa"].HeaderText = "Khoa";
+            if (dataGridView.Columns.Contains("MaKhoa"))
+                dataGridView.Columns["MaKhoa"].Visible = false;
+
+            // — AUTO-SIZE & TỈ LỆ FILL —
+            dataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dataGridView.Columns["MaMH"].FillWeight = 15;  // 15%
+            dataGridView.Columns["TenMH"].FillWeight = 45;  // 45%
+            dataGridView.Columns["TinChi"].FillWeight = 20;  // 20%
+            dataGridView.Columns["TenKhoa"].FillWeight = 20;  // 20%
+
             dataGridView.SelectionChanged += DataGridView_SelectionChanged;
 
             // -- Search & buttons
@@ -58,6 +73,23 @@ namespace BTL
 
             // giảng viên dạy môn
             dataGridViewGV.DataSource = _db.GetGiangVienByMon(row["MaMH"].ToString());
+            // — ĐỔI TIÊU ĐỀ CỘT & ẨN CỘT —
+            dataGridViewGV.Columns["MaGV"].HeaderText = "Mã giảng viên";
+            dataGridViewGV.Columns["TenGV"].HeaderText = "Họ và tên";
+            //dataGridViewGV.Columns["TenKhoa"].HeaderText = "Khoa";
+            //dataGridViewGV.Columns["TenMH"].HeaderText = "Môn học";
+            //if (dataGridViewGV.Columns.Contains("MaKhoa"))
+            //    dataGridViewGV.Columns["MaKhoa"].Visible = false;
+            //if (dataGridViewGV.Columns.Contains("MaMH"))
+            //    dataGridViewGV.Columns["MaMH"].Visible = false;
+
+            // — AUTO-SIZE & TỈ LỆ FILL —
+            dataGridViewGV.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dataGridViewGV.Columns["MaGV"].FillWeight = 10;  // 10%
+            dataGridViewGV.Columns["TenGV"].FillWeight = 40;  // 40%
+            //dataGridViewGV.Columns["TenKhoa"].FillWeight = 25;  // 25%
+            //dataGridViewGV.Columns["TenMH"].FillWeight = 25;  // 25%
+
         }
 
         // ------------------------- SEARCH ----------------------------------

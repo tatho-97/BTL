@@ -40,6 +40,36 @@ namespace BTL
             dataGridView.DataSource = _viewGV;
             dataGridView.SelectionChanged += DataGridView_SelectionChanged;
 
+            // — ĐỔI TIÊU ĐỀ CỘT —
+            if (dataGridView.Columns.Contains("MaGV"))
+                dataGridView.Columns["MaGV"].HeaderText = "Mã giảng viên";
+            if (dataGridView.Columns.Contains("TenGV"))
+                dataGridView.Columns["TenGV"].HeaderText = "Họ và tên";
+            if (dataGridView.Columns.Contains("TenKhoa"))
+                dataGridView.Columns["TenKhoa"].HeaderText = "Khoa";
+            if (dataGridView.Columns.Contains("TenMH"))
+                dataGridView.Columns["TenMH"].HeaderText = "Môn học";
+
+            // — ẨN CÁC CỘT MÃ KHÓA NGOẠI (nếu không cần hiển thị) —
+            if (dataGridView.Columns.Contains("MaKhoa"))
+                dataGridView.Columns["MaKhoa"].Visible = false;
+            if (dataGridView.Columns.Contains("MaMH"))
+                dataGridView.Columns["MaMH"].Visible = false;
+
+            // — TỰ ĐỘNG ĐIỀU CHỈNH KÍCH THƯỚC —
+            dataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            // Tuỳ chỉnh tỉ lệ fill cho mỗi cột
+            dataGridView.Columns["MaGV"].FillWeight = 10;  // 10%
+            dataGridView.Columns["TenGV"].FillWeight = 30;  // 30%
+            if (dataGridView.Columns.Contains("TenKhoa"))
+                dataGridView.Columns["TenKhoa"].FillWeight = 30;
+            if (dataGridView.Columns.Contains("TenMH"))
+                dataGridView.Columns["TenMH"].FillWeight = 30;
+
+            // (Tùy chọn) nếu muốn cho hàng auto cao theo nội dung:
+            // dataGridView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+
+
             // -- TÌM KIẾM
             buttonSearch.Click += ButtonSearch_Click;
             textBoxSearch.TextChanged += ButtonSearch_Click;
@@ -80,6 +110,20 @@ namespace BTL
             // Lớp giảng dạy
             dataGridViewLH.DataSource =
                 _db.GetLopByGiangVien(row["MaGV"].ToString());
+            // — ĐỔI TIÊU ĐỀ CỘT —
+                dataGridViewLH.Columns["MaLop"].HeaderText = "Mã lớp";
+                dataGridViewLH.Columns["TenLop"].HeaderText = "Tên lớp";
+            dataGridViewLH.Columns["MaMH"].Visible = false; 
+
+
+            // — TỰ ĐỘNG ĐIỀU CHỈNH KÍCH THƯỚC —
+            // Cột sẽ tự động giãn đều ra hết vùng DataGridView
+            dataGridViewLH.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+
+            // (Tuỳ chọn) Bạn có thể điều chỉnh tỉ lệ “chiếm chỗ” của mỗi cột:
+            dataGridViewLH.Columns["MaLop"].FillWeight = 20;  // 20% 
+            dataGridViewLH.Columns["TenLop"].FillWeight = 50;  // 50%
+
         }
 
         private void ButtonSearch_Click(object? s, EventArgs e)

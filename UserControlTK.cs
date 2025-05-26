@@ -51,6 +51,29 @@ namespace BTL
             _dtTK = _db.GetAllTaiKhoan();
             _viewTK = new DataView(_dtTK) { RowFilter = filter };
             dataGridView.DataSource = _viewTK;
+            if (dataGridView.Columns.Contains("Username"))
+                dataGridView.Columns["Username"].HeaderText = "Tên đăng nhập";
+            if (dataGridView.Columns.Contains("Password"))
+                dataGridView.Columns["Password"].HeaderText = "Mật khẩu";
+            if (dataGridView.Columns.Contains("Role"))
+                dataGridView.Columns["Role"].HeaderText = "Phân quyền";
+            if (dataGridView.Columns.Contains("TenGV"))
+                dataGridView.Columns["TenGV"].HeaderText = "Giảng viên";
+
+            // — ẨN CỘT KHÓA NGOẠI (nếu có) —
+            if (dataGridView.Columns.Contains("MaGV"))
+                dataGridView.Columns["MaGV"].Visible = false;
+            if (dataGridView.Columns.Contains("MaKhoa"))
+                dataGridView.Columns["MaKhoa"].Visible = false;
+
+            // — TỰ ĐỘNG CO GIÃN CỘT CHO VỪA VỚI GRID — 
+            dataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+
+            // — TUỲ CHỈNH TỈ LỆ CHIẾM CHỖ MỖI CỘT (FillWeight là phần trăm) —
+            dataGridView.Columns["Username"].FillWeight = 25;   // 25%
+            dataGridView.Columns["Password"].FillWeight = 25;   // 25%
+            dataGridView.Columns["Role"].FillWeight = 20;   // 20%
+            dataGridView.Columns["TenGV"].FillWeight = 30;   // 30%
         }
 
         private void DataGridView_SelectionChanged(object? s, EventArgs e)
