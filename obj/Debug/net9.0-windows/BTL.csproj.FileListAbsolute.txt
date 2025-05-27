@@ -114,4 +114,7 @@ C:\Users\VICTUS\OneDrive\Documents\pm\obj\Debug\net9.0-windows\refint\BTL.dll
 C:\Users\VICTUS\OneDrive\Documents\pm\obj\Debug\net9.0-windows\BTL.pdb
 C:\Users\VICTUS\OneDrive\Documents\pm\obj\Debug\net9.0-windows\BTL.genruntimeconfig.cache
 C:\Users\VICTUS\OneDrive\Documents\pm\obj\Debug\net9.0-windows\ref\BTL.dll
+<<<<<<< Updated upstream
 C:\Users\VICTUS\OneDrive\Documents\pm\obj\Debug\net9.0-windows\BTL.Properties.Resources.resources
+=======
+>>>>>>> Stashed changes
