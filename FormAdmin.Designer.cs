@@ -60,21 +60,22 @@
             // 
             // buttonDX
             // 
-            buttonDX.Dock = DockStyle.Bottom;
+            buttonDX.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            buttonDX.BackColor = SystemColors.InactiveBorder;
             buttonDX.FlatAppearance.BorderSize = 0;
             buttonDX.FlatStyle = FlatStyle.Flat;
             buttonDX.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            buttonDX.Location = new Point(0, 811);
+            buttonDX.Location = new Point(3, 811);
             buttonDX.Name = "buttonDX";
-            buttonDX.Size = new Size(200, 50);
+            buttonDX.Size = new Size(194, 50);
             buttonDX.TabIndex = 2;
             buttonDX.Text = "ĐĂNG XUẤT";
-            buttonDX.UseVisualStyleBackColor = true;
+            buttonDX.UseVisualStyleBackColor = false;
             buttonDX.Click += buttonDX_Click;
             // 
             // pictureBoxLogo
             // 
-            pictureBoxLogo.BackColor = SystemColors.ActiveBorder;
+            pictureBoxLogo.BackColor = SystemColors.Highlight;
             pictureBoxLogo.Dock = DockStyle.Top;
             pictureBoxLogo.Location = new Point(0, 0);
             pictureBoxLogo.Name = "pictureBoxLogo";

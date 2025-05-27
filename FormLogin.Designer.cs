@@ -29,24 +29,38 @@
         private void InitializeComponent()
         {
             panel1 = new Panel();
+            pictureBox1 = new PictureBox();
             buttonLogin = new Button();
             label1 = new Label();
             label2 = new Label();
             textBoxUsername = new TextBox();
             textBoxPassword = new TextBox();
             tableLayoutPanel1 = new TableLayoutPanel();
+            panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             tableLayoutPanel1.SuspendLayout();
             SuspendLayout();
             // 
             // panel1
             // 
             panel1.BackColor = SystemColors.ButtonHighlight;
+            panel1.Controls.Add(pictureBox1);
             panel1.Dock = DockStyle.Left;
             panel1.Location = new Point(0, 0);
             panel1.Margin = new Padding(4);
             panel1.Name = "panel1";
             panel1.Size = new Size(344, 391);
             panel1.TabIndex = 0;
+            // 
+            // pictureBox1
+            // 
+            pictureBox1.Image = Properties.Resources.ảnh_neenf_3;
+            pictureBox1.Location = new Point(0, 0);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(341, 391);
+            pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
+            pictureBox1.TabIndex = 0;
+            pictureBox1.TabStop = false;
             // 
             // buttonLogin
             // 
@@ -124,6 +138,8 @@
             Font = new Font("Segoe UI", 12F);
             Margin = new Padding(4);
             Name = "FormLogin";
+            panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             tableLayoutPanel1.ResumeLayout(false);
             tableLayoutPanel1.PerformLayout();
             ResumeLayout(false);
@@ -138,5 +154,6 @@
         private TextBox textBoxUsername;
         private TextBox textBoxPassword;
         private TableLayoutPanel tableLayoutPanel1;
+        private PictureBox pictureBox1;
     }
 }
