@@ -1,5 +1,4 @@
 ﻿using Microsoft.Data.Sqlite;
-using System;
 using System.Data;
 
 namespace BTL
@@ -28,11 +27,11 @@ namespace BTL
                 Open();
                 const string sql = @"SELECT * FROM TaiKhoan
                                      WHERE Username = @u AND Password = @p";
-                using var cmd = new SqliteCommand(sql, _conn);
+                using SqliteCommand cmd = new(sql, _conn);
                 cmd.Parameters.AddWithValue("@u", username);
                 cmd.Parameters.AddWithValue("@p", password);
 
-                using var rd = cmd.ExecuteReader();
+                using SqliteDataReader rd = cmd.ExecuteReader();
                 if (rd.Read())
                 {
                     return new TaiKhoan
@@ -51,15 +50,15 @@ namespace BTL
 
         public DataTable GetDataTable(string sql, params (string name, object value)[] prms)
         {
-            var dt = new DataTable();
+            DataTable dt = new();
             try
             {
                 Open();
-                using var cmd = new SqliteCommand(sql, _conn);
-                foreach (var p in prms)
+                using SqliteCommand cmd = new(sql, _conn);
+                foreach ((string name, object value) p in prms)
                     cmd.Parameters.AddWithValue(p.name, p.value ?? DBNull.Value);
 
-                using var reader = cmd.ExecuteReader();
+                using SqliteDataReader reader = cmd.ExecuteReader();
                 dt.Load(reader);     // DataTable tự “hút” toàn bộ dữ liệu
             }
             finally { Close(); }
@@ -67,13 +66,22 @@ namespace BTL
             return dt;
         }
 
+        private List<string> GetTableColumns(string tableName)
+        {
+            List<string> cols = new();
+            using DataTable dt = GetDataTable($"PRAGMA table_info({tableName});");
+            foreach (DataRow r in dt.Rows)
+                cols.Add(r["name"].ToString());
+            return cols;
+        }
+
         private int Exec(string sql, params (string p, object v)[] prms)
         {
             try
             {
                 Open();
-                using var cmd = new SqliteCommand(sql, _conn);
-                foreach (var t in prms)
+                using SqliteCommand cmd = new(sql, _conn);
+                foreach ((string p, object v) t in prms)
                     cmd.Parameters.AddWithValue(t.p, t.v ?? DBNull.Value);
                 return cmd.ExecuteNonQuery();
             }
@@ -91,76 +99,112 @@ namespace BTL
             if (t == typeof(Khoa)) return new[] { "MaKhoa" };
             if (t == typeof(Lop)) return new[] { "MaLop" };
             // Mặc định: chọn thuộc tính đầu tiên làm khóa chính
-            var props = t.GetProperties();
+            System.Reflection.PropertyInfo[] props = t.GetProperties();
             return props.Length > 0 ? new[] { props[0].Name } : Array.Empty<string>();
         }
 
         /// <summary>Thêm một bản ghi đối tượng T vào cơ sở dữ liệu.</summary>
+        /// <summary>
+        /// Thêm một bản ghi đối tượng T vào cơ sở dữ liệu.
+        /// </summary>
         public bool Insert<T>(T obj)
         {
-            if (obj == null) return false;
-            string table = typeof(T).Name;
-            // Chuẩn bị danh sách cột và tham số
-            var props = typeof(T).GetProperties();
-            string columns = string.Join(",", props.Select(p => p.Name));
-            string values = string.Join(",", props.Select(p => $"@{p.Name}"));
-            string sql = $"INSERT INTO {table}({columns}) VALUES({values});";
-            // Tạo danh sách tham số
-            var prms = props.Select(p => ($"@{p.Name}", p.GetValue(obj) ?? DBNull.Value)).ToArray();
+            Type type = typeof(T);
+            string table = type.Name;
+
+            // 1) Lấy danh sách cột thực của bảng
+            List<string> tableCols = GetTableColumns(table);
+
+            // 2) Chọn tất cả property của T có tên khớp với cột trong bảng
+            List<System.Reflection.PropertyInfo> props = type.GetProperties()
+                            .Where(p => tableCols
+                                .Contains(p.Name, StringComparer.OrdinalIgnoreCase))
+                            .ToList();
+
+            if (!props.Any())
+            {
+                throw new InvalidOperationException(
+                    $"[Insert<{table}>] No matching properties to insert. Table columns: {string.Join(",", tableCols)}"
+                );
+            }
+
+            // 3) Sinh câu SQL INSERT
+            string columns = string.Join(", ", props.Select(p => p.Name));
+            string parameters = string.Join(", ", props.Select(p => "@" + p.Name));
+            string sql = $"INSERT INTO {table} ({columns}) VALUES ({parameters});";
+
+            // 4) Tạo mảng parameter tuples (string name, object value)
+            (string, object)[] prms = props
+                .Select(p => (
+                    "@" + p.Name,
+                    p.GetValue(obj) as object ?? DBNull.Value
+                ))
+                .ToArray();
+
+            // 5) Thực thi
             return Exec(sql, prms) > 0;
         }
 
-        /// <summary>Cập nhật bản ghi đối tượng T trong cơ sở dữ liệu (dựa trên khóa chính).</summary>
+
+
+
+        /// <summary>
+        /// Updates an existing record of type T in the database, based on its primary key(s).
+        /// </summary>
         public bool Update<T>(T obj)
         {
-            if (obj == null) return false;
             string table = typeof(T).Name;
-            var props = typeof(T).GetProperties();
-            var keyNames = GetPrimaryKeyNames(typeof(T));
-            // Các cột để cập nhật (loại trừ cột khóa chính)
-            var setProps = props.Where(p => !keyNames.Contains(p.Name)).ToArray();
+
+            // 1) Discover all public properties on T
+            System.Reflection.PropertyInfo[] props = typeof(T).GetProperties().Where(p => p.CanRead && p.CanWrite).ToArray();
+
+            // 2) Figure out primary key names for T (e.g. ["MaMH"] or ["MaGV","MaMH"])
+            string[] keyNames = GetPrimaryKeyNames(typeof(T));
+            if (keyNames.Length == 0)
+                throw new InvalidOperationException($"[Update<{table}>] No primary key defined.");
+
+            // 3) Load actual table columns via PRAGMA, so we only update real columns
+            List<string> tableCols = GetTableColumns(table);
+            // (internally runs: PRAGMA table_info({table}); and pulls the "name" field)
+
+            // 4) Split props into SET vs WHERE
+            System.Reflection.PropertyInfo[] setProps = props.Where(p => tableCols.Contains(p.Name, StringComparer.OrdinalIgnoreCase) && !keyNames.Contains(p.Name, StringComparer.OrdinalIgnoreCase)).ToArray();
+            if (setProps.Length == 0)
+                throw new InvalidOperationException($"[Update<{table}>] No updatable columns. Table columns: {string.Join(",", tableCols)}");
+
+            System.Reflection.PropertyInfo[] whereProps = props.Where(p => keyNames.Contains(p.Name, StringComparer.OrdinalIgnoreCase)).ToArray();
+            if (whereProps.Length != keyNames.Length)
+                throw new InvalidOperationException($"[Update<{table}>] Mismatch between primary keys and model properties.");
+
+            // 5) Build SQL
             string setClause = string.Join(", ", setProps.Select(p => $"{p.Name}=@{p.Name}"));
-            // Mệnh đề WHERE theo khóa chính
-            string whereClause = string.Join(" AND ", keyNames.Select(k => $"{k}=@{k}"));
+            string whereClause = string.Join(" AND ", whereProps.Select(p => $"{p.Name}=@{p.Name}"));
             string sql = $"UPDATE {table} SET {setClause} WHERE {whereClause};";
-            // Tham số cho cả cột cập nhật và khóa chính
-            var prms = new List<(string, object)>();
-            foreach (var p in setProps)
-                prms.Add(($"@{p.Name}", p.GetValue(obj) ?? DBNull.Value));
-            foreach (var key in keyNames)
-            {
-                var keyProp = props.FirstOrDefault(p => p.Name == key);
-                prms.Add(($"@{key}", keyProp?.GetValue(obj) ?? DBNull.Value));
-            }
-            return Exec(sql, prms.ToArray()) > 0;
+
+            // 6) Build parameters (use DBNull.Value for nulls)
+            (string, object)[] prms = setProps.Concat(whereProps).Select(p => ("@" + p.Name, p.GetValue(obj) ?? DBNull.Value)).ToArray();
+
+            // 7) Debug log (optional)
+            Console.WriteLine($"[DEBUG] Update<{table}> SQL: {sql}");
+            foreach ((string name, object value) in prms)
+                Console.WriteLine($"[DEBUG]   Param {name} = {value}");
+
+            // 8) Execute and return success
+            return Exec(sql, prms) > 0;
         }
 
         public bool UpdateDiem(string maSV, string maMH,
                        float diemCC, float diemTX, float diemThi, float diemHP)
         {
-            const string sql = @"
-        UPDATE Diem
-        SET DiemCC  = @cc,
-            DiemTX  = @tx,
-            DiemThi = @thi,
-            DiemHP  = @hp
-        WHERE MaSV  = @sv
-          AND MaMH  = @mh;";
-            return Exec(sql,
-                ("@cc", diemCC),
-                ("@tx", diemTX),
-                ("@thi", diemThi),
-                ("@hp", diemHP),
-                ("@sv", maSV),
-                ("@mh", maMH)
-            ) > 0;
+            const string sql = @"UPDATE Diem SET DiemCC = @cc, DiemTX = @tx, DiemThi = @thi, DiemHP = @hp WHERE MaSV = @sv AND MaMH = @mh;";
+            return Exec(sql, ("@cc", diemCC), ("@tx", diemTX), ("@thi", diemThi), ("@hp", diemHP), ("@sv", maSV), ("@mh", maMH)) > 0;
         }
 
         /// <summary>Xóa bản ghi đối tượng T theo khóa chính.</summary>
         public bool Delete<T>(params object[] keys)
         {
             string table = typeof(T).Name;
-            var keyNames = GetPrimaryKeyNames(typeof(T));
+            string[] keyNames = GetPrimaryKeyNames(typeof(T));
             if (keys.Length != keyNames.Length) return false;
 
             // Xử lý trường hợp đặc biệt: cần xóa liên quan ở bảng khác (đảm bảo toàn vẹn dữ liệu)
@@ -179,8 +223,7 @@ namespace BTL
             if (typeof(T) == typeof(Lop))
             {
                 // Xóa tất cả sinh viên (và điểm của họ) thuộc lớp này, xóa giảng dạy liên quan, sau đó xóa lớp
-                Exec(@"DELETE FROM Diem
-                       WHERE MaSV IN (SELECT MaSV FROM SinhVien WHERE MaLop=@lop);", ("@lop", keys[0]));
+                Exec(@"DELETE FROM Diem WHERE MaSV IN (SELECT MaSV FROM SinhVien WHERE MaLop=@lop);", ("@lop", keys[0]));
                 Exec("DELETE FROM SinhVien WHERE MaLop=@lop;", ("@lop", keys[0]));
                 Exec("DELETE FROM GiangDay WHERE MaLop=@lop;", ("@lop", keys[0]));
                 return Exec("DELETE FROM Lop WHERE MaLop=@lop;", ("@lop", keys[0])) > 0;
@@ -210,13 +253,12 @@ namespace BTL
             if (typeof(T) == typeof(Diem))
             {
                 // Xóa một bản ghi điểm (nếu cần sử dụng)
-                return Exec("DELETE FROM Diem WHERE MaSV=@sv AND MaMH=@mh;",
-                            ("@sv", keys[0]), ("@mh", keys[1])) > 0;
+                return Exec("DELETE FROM Diem WHERE MaSV=@sv AND MaMH=@mh;", ("@sv", keys[0]), ("@mh", keys[1])) > 0;
             }
 
             // Mặc định: xóa theo khóa chính
             string whereClause = string.Join(" AND ", keyNames.Select((k, i) => $"{k}=@key{i}"));
-            var prms = new List<(string, object)>();
+            List<(string, object)> prms = new();
             for (int i = 0; i < keyNames.Length; i++)
                 prms.Add(($"@key{i}", keys[i] ?? DBNull.Value));
             string sql = $"DELETE FROM {table} WHERE {whereClause};";
@@ -227,11 +269,11 @@ namespace BTL
         public bool Exist<T>(params object[] keys)
         {
             string table = typeof(T).Name;
-            var keyNames = GetPrimaryKeyNames(typeof(T));
+            string[] keyNames = GetPrimaryKeyNames(typeof(T));
             if (keys.Length != keyNames.Length) return false;
             string whereClause = string.Join(" AND ", keyNames.Select((k, i) => $"{k}=@key{i}"));
             string sql = $"SELECT 1 FROM {table} WHERE {whereClause} LIMIT 1;";
-            var prms = new List<(string, object)>();
+            List<(string, object)> prms = new();
             for (int i = 0; i < keyNames.Length; i++)
                 prms.Add(($"@key{i}", keys[i] ?? DBNull.Value));
             return GetDataTable(sql, prms.ToArray()).Rows.Count > 0;
@@ -244,101 +286,81 @@ namespace BTL
             // Truy vấn tùy chỉnh cho một số bảng có khóa ngoại để lấy tên thay vì mã
             if (typeof(T) == typeof(SinhVien))
             {
-                const string sql = @"
-                    SELECT sv.MaSV, sv.TenSV, sv.NgaySinh,
-                           sv.GioiTinh, sv.DiaChi,
-                           l.TenLop AS LopHoc, sv.MaLop
-                    FROM   SinhVien sv
-                    LEFT JOIN Lop l ON l.MaLop = sv.MaLop
-                    ORDER BY sv.MaSV;";
+                const string sql = @"SELECT sv.MaSV, sv.TenSV, sv.NgaySinh, sv.GioiTinh, sv.DiaChi, l.TenLop AS LopHoc, sv.MaLop
+                                     FROM   SinhVien sv
+                                     LEFT JOIN Lop l ON l.MaLop = sv.MaLop
+                                     ORDER BY sv.MaSV;";
                 return GetDataTable(sql);
             }
             if (typeof(T) == typeof(GiangVien))
             {
-                const string sql = @"
-                    SELECT gv.MaGV, gv.TenGV,
-                           k.TenKhoa, gv.MaKhoa,
-                           mh.TenMH, gv.MaMH
-                    FROM   GiangVien gv
-                    LEFT JOIN Khoa   k  ON k.MaKhoa = gv.MaKhoa
-                    LEFT JOIN MonHoc mh ON mh.MaMH  = gv.MaMH
-                    ORDER BY gv.MaGV;";
+                const string sql = @"SELECT gv.MaGV, gv.TenGV, k.TenKhoa, gv.MaKhoa, mh.TenMH, gv.MaMH
+                                     FROM   GiangVien gv
+                                     LEFT JOIN Khoa   k  ON k.MaKhoa = gv.MaKhoa
+                                     LEFT JOIN MonHoc mh ON mh.MaMH  = gv.MaMH
+                                     ORDER BY gv.MaGV;";
                 return GetDataTable(sql);
             }
             if (typeof(T) == typeof(MonHoc))
             {
-                const string sql = @"
-                    SELECT mh.MaMH, mh.TenMH, mh.TinChi,
-                           mh.MaKhoa, k.TenKhoa
-                    FROM   MonHoc mh
-                    LEFT JOIN Khoa k ON k.MaKhoa = mh.MaKhoa
-                    ORDER BY mh.TenMH;";
+                const string sql = @"SELECT mh.MaMH, mh.TenMH, mh.TinChi, mh.MaKhoa, k.TenKhoa
+                                     FROM   MonHoc mh
+                                     LEFT JOIN Khoa k ON k.MaKhoa = mh.MaKhoa
+                                     ORDER BY mh.TenMH;";
                 return GetDataTable(sql);
             }
             if (typeof(T) == typeof(Khoa))
-            {
                 return GetDataTable("SELECT MaKhoa, TenKhoa FROM Khoa ORDER BY TenKhoa;");
-            }
             if (typeof(T) == typeof(Lop))
-            {
                 return GetDataTable("SELECT MaLop, TenLop FROM Lop ORDER BY TenLop;");
-            }
             if (typeof(T) == typeof(TaiKhoan))
             {
-                const string sql = @"
-                    SELECT tk.Username, tk.Password, tk.Role,
-                           tk.MaGV, gv.TenGV, tk.MaKhoa
-                    FROM   TaiKhoan tk
-                    LEFT JOIN GiangVien gv ON gv.MaGV = tk.MaGV
-                    ORDER BY tk.Username;";
+                const string sql = @"SELECT tk.Username, tk.Password, tk.Role, tk.MaGV, gv.TenGV, tk.MaKhoa
+                                     FROM   TaiKhoan tk
+                                     LEFT JOIN GiangVien gv ON gv.MaGV = tk.MaGV
+                                     ORDER BY tk.Username;";
                 return GetDataTable(sql);
             }
             if (typeof(T) == typeof(Diem))
-            {
                 return GetDataTable("SELECT * FROM Diem;");
-            }
             // Mặc định: SELECT * (không có tùy chỉnh đặc biệt)
             return GetDataTable($"SELECT * FROM {table};");
         }
 
         // ==== CÁC HÀM LẤY DỮ LIỆU ĐẶC BIỆT (không thuộc nhóm CRUD chung) ====
-
         public DataTable GetMonHocByKhoa(string maKhoa)
         {
-            const string sql = @"SELECT MaMH, TenMH
-                                 FROM   MonHoc
-                                 WHERE  MaKhoa=@mk
-                                 ORDER  BY TenMH;";
+            const string sql = @"SELECT MaMH, TenMH FROM MonHoc WHERE MaKhoa=@mk ORDER BY TenMH;";
             return GetDataTable(sql, ("@mk", maKhoa));
         }
 
+        /// <summary>
+        /// Lấy danh sách lớp mà giảng viên maGV đang dạy.
+        /// </summary>
         public DataTable GetLopByGiangVien(string maGV)
         {
-            const string sql = @"
-                SELECT gd.MaLop, l.TenLop, gd.MaMH
-                FROM   GiangDay gd
-                JOIN   Lop l ON l.MaLop = gd.MaLop
-                WHERE  gd.MaGV = @gv;";
+            const string sql = @"SELECT DISTINCT l.MaLop, l.TenLop
+                                 FROM   GiangDay gd
+                                 JOIN   Lop l ON l.MaLop = gd.MaLop
+                                 WHERE  gd.MaGV = @gv
+                                 ORDER  BY l.MaLop;
+    ";
             return GetDataTable(sql, ("@gv", maGV));
         }
 
         public DataTable GetSinhVienByLop(string maLop)
         {
-            const string sql = @"
-                SELECT MaSV, TenSV, GioiTinh, NgaySinh
-                FROM   SinhVien
-                WHERE  MaLop = @lop;";
+            const string sql = @"SELECT MaSV, TenSV, GioiTinh, NgaySinh FROM SinhVien WHERE MaLop = @lop;";
             return GetDataTable(sql, ("@lop", maLop));
         }
 
         public DataTable GetMonByLop(string maLop)
         {
-            const string sql = @"
-                SELECT gd.MaMH, mh.TenMH, gd.MaGV, gv.TenGV
-                FROM   GiangDay gd
-                JOIN   MonHoc  mh ON mh.MaMH = gd.MaMH
-                JOIN   GiangVien gv ON gv.MaGV = gd.MaGV
-                WHERE  gd.MaLop = @lop;";
+            const string sql = @"SELECT gd.MaMH, mh.TenMH, gd.MaGV, gv.TenGV
+                                 FROM   GiangDay gd
+                                 JOIN   MonHoc  mh ON mh.MaMH = gd.MaMH
+                                 JOIN   GiangVien gv ON gv.MaGV = gd.MaGV
+                                 WHERE  gd.MaLop = @lop;";
             return GetDataTable(sql, ("@lop", maLop));
         }
 
@@ -347,9 +369,15 @@ namespace BTL
             const string sql = "INSERT INTO GiangDay(MaGV, MaMH, MaLop) VALUES(@gv,@mh,@lop);";
             return Exec(sql, ("@gv", maGV), ("@mh", maMH), ("@lop", maLop)) > 0;
         }
-        public bool DeleteGiangDay(string maLop, string maMH) =>
-            Exec("DELETE FROM GiangDay WHERE MaLop=@lop AND MaMH=@mh;", ("@lop", maLop), ("@mh", maMH)) > 0;
+        public bool DeleteGiangDay(string maLop, string maMH)
+            => Exec("DELETE FROM GiangDay WHERE MaLop=@lop AND MaMH=@mh;", ("@lop", maLop), ("@mh", maMH)) > 0;
 
+        /// <summary>
+        /// Trả về danh sách các giảng viên đã được phân công dạy môn maMH.
+        /// </summary>
+        /// <summary>
+        /// Trả về danh sách các giảng viên đã được phân công dạy môn maMH.
+        /// </summary>
         public DataTable GetGiangVienByMon(string maMH)
         {
             const string sql = "SELECT MaGV, TenGV FROM GiangVien WHERE MaMH=@mh;";
@@ -358,21 +386,18 @@ namespace BTL
 
         public DataTable GetSV_Diem_ByLop(string maLop, string maMH)
         {
-            const string sql = @"
-                SELECT  sv.MaSV, sv.TenSV, sv.GioiTinh, sv.NgaySinh, sv.DiaChi,
-                        d.DiemCC, d.DiemTX, d.DiemTHI, d.DiemHP
-                FROM    SinhVien sv
-                LEFT JOIN Diem d
-                       ON d.MaSV = sv.MaSV AND d.MaMH = @mh
-                WHERE   sv.MaLop = @lop
-                ORDER BY sv.MaSV;";
+            const string sql = @"SELECT  sv.MaSV, sv.TenSV, sv.GioiTinh, sv.NgaySinh, sv.DiaChi, d.DiemCC, d.DiemTX, d.DiemTHI, d.DiemHP
+                                 FROM    SinhVien sv
+                                 LEFT JOIN Diem d
+                                 ON      d.MaSV = sv.MaSV AND d.MaMH = @mh
+                                 WHERE   sv.MaLop = @lop
+                                 ORDER BY sv.MaSV;";
             return GetDataTable(sql, ("@lop", maLop), ("@mh", maMH));
         }
 
         public bool UpdatePassword(string user, string newPass)
         {
-            return Exec("UPDATE TaiKhoan SET Password=@p WHERE Username=@u;",
-                        ("@p", newPass), ("@u", user)) > 0;
+            return Exec("UPDATE TaiKhoan SET Password=@p WHERE Username=@u;", ("@p", newPass), ("@u", user)) > 0;
         }
     }
 }

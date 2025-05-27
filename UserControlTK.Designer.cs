@@ -155,6 +155,7 @@
             buttonXN.Text = "XÁC NHẬN";
             buttonXN.UseVisualStyleBackColor = true;
             buttonXN.Visible = false;
+            buttonXN.Click += buttonXN_Click;
             // 
             // buttonHuy
             // 
@@ -177,6 +178,7 @@
             buttonDMK.TabIndex = 7;
             buttonDMK.Text = "ĐỔI MẬT KHẨU";
             buttonDMK.UseVisualStyleBackColor = true;
+            buttonDMK.Click += buttonDMK_Click;
             // 
             // tableLayoutPanel1
             // 
@@ -270,6 +272,7 @@
             // comboBoxGV
             // 
             comboBoxGV.Dock = DockStyle.Fill;
+            comboBoxGV.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBoxGV.Enabled = false;
             comboBoxGV.FormattingEnabled = true;
             comboBoxGV.Location = new Point(135, 174);

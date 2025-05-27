@@ -77,6 +77,17 @@ namespace BTL
             textBoxTenGV.Text = row["TenGV"].ToString();
             comboBoxKhoa.SelectedValue = row["MaKhoa"];
             comboBoxMH.SelectedValue = row["MaMH"];
+
+            // Hiển thị các lớp giảng viên dạy
+            var maGV = row["MaGV"].ToString();
+            dataGridViewLH.DataSource = _db.GetLopByGiangVien(maGV);
+            // Đổi tiêu đề cột
+            dataGridViewLH.Columns["MaLop"].HeaderText = "Mã lớp";
+            dataGridViewLH.Columns["TenLop"].HeaderText = "Tên lớp";
+            // Tự động co giãn
+            dataGridViewLH.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dataGridViewLH.Columns["MaLop"].FillWeight = 20;
+            dataGridViewLH.Columns["TenLop"].FillWeight = 80;
         }
 
         private void ButtonSearch_Click(object? sender, EventArgs e)
@@ -125,10 +136,10 @@ namespace BTL
             _mode = Mode.View;
             ToggleEdit(false);
             if (dataGridView.CurrentRow != null)
-                DataGridView_SelectionChanged(null!, EventArgs.Empty);
+            DataGridView_SelectionChanged(null!, EventArgs.Empty);
         }
 
-        private void buttonXacNhan_Click(object? sender, EventArgs e)
+        private void buttonXacNhan_Click(object sender, EventArgs e)
         {
             var gv = new GiangVien
             {
@@ -137,22 +148,44 @@ namespace BTL
                 MaKhoa = comboBoxKhoa.SelectedValue?.ToString(),
                 MaMH = comboBoxMH.SelectedValue?.ToString()
             };
-            bool ok = false;
+
+            // 1. Validate nhập liệu
+            if (string.IsNullOrEmpty(gv.MaGV)
+             || string.IsNullOrEmpty(gv.TenGV)
+             || string.IsNullOrEmpty(gv.MaKhoa)
+             || string.IsNullOrEmpty(gv.MaMH))
+            {
+                MessageBox.Show("Vui lòng điền đủ thông tin giảng viên.", "Thiếu dữ liệu",
+                                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            bool ok;
             if (_mode == Mode.Add)
             {
+                // kiểm tra trùng khóa trước khi thêm mới
                 if (_db.Exist<GiangVien>(gv.MaGV))
                 {
-                    MessageBox.Show("Mã giảng viên đã tồn tại!");
+                    MessageBox.Show($"Mã giảng viên '{gv.MaGV}' đã tồn tại.",
+                                    "Không thể thêm", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
-                ok = _db.Insert<GiangVien>(gv);
+                ok = _db.Insert(gv);
             }
-            else if (_mode == Mode.Edit)
+            else // Mode.Edit
             {
-                ok = _db.Update<GiangVien>(gv);
+                // cập nhật: gọi Update<T>
+                ok = _db.Update(gv);
             }
-            MessageBox.Show(ok ? "Lưu thành công" : "Thao tác thất bại!");
-            buttonHuy_Click(null!, EventArgs.Empty);
+
+            MessageBox.Show(ok ? "Lưu thành công!" : "Thao tác thất bại!",
+                            ok ? "Thành công" : "Lỗi",
+                            MessageBoxButtons.OK,
+                            ok ? MessageBoxIcon.Information : MessageBoxIcon.Error);
+
+            // Quay về chế độ View, load lại lưới
+            _mode = Mode.View;
+            ToggleEdit(false);
             LoadGrid();
         }
 

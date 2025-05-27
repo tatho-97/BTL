@@ -36,8 +36,8 @@
             label2 = new Label();
             dataGridView = new DataGridView();
             panel2 = new Panel();
-            label3 = new Label();
             dataGridViewGV = new DataGridView();
+            label3 = new Label();
             buttonXoa = new Button();
             buttonHuy = new Button();
             buttonSua = new Button();
@@ -80,6 +80,7 @@
             buttonThem.TabIndex = 6;
             buttonThem.Text = "THÊM";
             buttonThem.UseVisualStyleBackColor = true;
+            buttonThem.Click += buttonThem_Click;
             // 
             // label4
             // 
@@ -135,8 +136,8 @@
             // panel2
             // 
             panel2.BackColor = SystemColors.ControlLightLight;
-            panel2.Controls.Add(label3);
             panel2.Controls.Add(dataGridViewGV);
+            panel2.Controls.Add(label3);
             panel2.Controls.Add(buttonXoa);
             panel2.Controls.Add(buttonHuy);
             panel2.Controls.Add(buttonSua);
@@ -148,6 +149,14 @@
             panel2.Size = new Size(1344, 401);
             panel2.TabIndex = 5;
             // 
+            // dataGridViewGV
+            // 
+            dataGridViewGV.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewGV.Location = new Point(525, 58);
+            dataGridViewGV.Name = "dataGridViewGV";
+            dataGridViewGV.Size = new Size(799, 298);
+            dataGridViewGV.TabIndex = 8;
+            // 
             // label3
             // 
             label3.AutoSize = true;
@@ -157,18 +166,6 @@
             label3.Size = new Size(273, 21);
             label3.TabIndex = 6;
             label3.Text = "DANH SÁCH CÁC GIẢNG VIÊN DẠY";
-            // 
-            // dataGridViewGV
-            // 
-            dataGridViewGV.AllowUserToAddRows = false;
-            dataGridViewGV.AllowUserToDeleteRows = false;
-            dataGridViewGV.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewGV.Location = new Point(525, 58);
-            dataGridViewGV.Name = "dataGridViewGV";
-            dataGridViewGV.ReadOnly = true;
-            dataGridViewGV.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dataGridViewGV.Size = new Size(800, 298);
-            dataGridViewGV.TabIndex = 5;
             // 
             // buttonXoa
             // 
@@ -360,7 +357,6 @@
         public DataGridView dataGridView;
         private Panel panel2;
         private Label label3;
-        private DataGridView dataGridViewGV;
         private Button buttonXoa;
         private Button buttonHuy;
         private Button buttonSua;
@@ -374,5 +370,6 @@
         private TextBox textBoxTenMH;
         private ComboBox comboBoxKhoa;
         private TextBox textBoxTC;
+        private DataGridView dataGridViewGV;
     }
 }

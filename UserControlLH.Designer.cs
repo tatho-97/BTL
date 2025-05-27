@@ -107,6 +107,7 @@
             dataGridViewMH.Location = new Point(924, 58);
             dataGridViewMH.Name = "dataGridViewMH";
             dataGridViewMH.ReadOnly = true;
+            dataGridViewMH.RowHeadersVisible = false;
             dataGridViewMH.Size = new Size(400, 298);
             dataGridViewMH.TabIndex = 7;
             // 
@@ -128,6 +129,7 @@
             dataGridViewSV.Location = new Point(496, 58);
             dataGridViewSV.Name = "dataGridViewSV";
             dataGridViewSV.ReadOnly = true;
+            dataGridViewSV.RowHeadersVisible = false;
             dataGridViewSV.Size = new Size(400, 298);
             dataGridViewSV.TabIndex = 5;
             // 

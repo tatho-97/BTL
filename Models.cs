@@ -8,13 +8,14 @@ namespace BTL
 {
     public class SinhVien
     {
-        public string? MaSV;
-        public string? TenSV;
-        public string? NgaySinh;
-        public string? GioiTinh;
-        public string? DiaChi;
-        public string? MaLop;
+        public string MaSV { get; set; }
+        public string TenSV { get; set; }
+        public string NgaySinh { get; set; }  // e.g. "yyyy-MM-dd"
+        public string GioiTinh { get; set; }  // "Nam" / "Nữ"
+        public string DiaChi { get; set; }
+        public string MaLop { get; set; }
     }
+
 
     public class Diem
     {
@@ -28,45 +29,48 @@ namespace BTL
 
     public class Lop
     {
-        public string? MaLop;
-        public string? TenLop;
+        public string? MaLop { get; set; }
+        public string? TenLop { get; set; }
     }
 
     public class Khoa
     {
-        public string? MaKhoa;
-        public string? TenKhoa;
+        public string? MaKhoa { get; set; }
+        public string? TenKhoa { get; set; }
     }
 
     public class MonHoc
     {
-        public string? MaMH;
-        public string? TenMH;
-        public int TinChi;
-        public string? MaKhoa;
+        // Primary key
+        public string MaMH { get; set; }
+
+        // Updatable columns — these must exist and be read/write
+        public string TenMH { get; set; }
+        public int TinChi { get; set; }
+        public string MaKhoa { get; set; }
     }
 
     public class GiangVien
     {
-        public string? MaGV;
-        public string? TenGV;
-        public string? MaKhoa;
-        public string? MaMH;
+        public string MaGV { get; set; }
+        public string TenGV { get; set; }
+        public string MaKhoa { get; set; }
+        public string MaMH { get; set; }
     }
 
     public class GiangDay
     {
-        public string? MaGV;
-        public string? MaMH;
-        public string? MaLop;
+        public string? MaGV { get; set; }
+        public string? MaMH { get; set; }
+        public string? MaLop { get; set; }
     }
 
     public class TaiKhoan
     {
-        public string? Username;
-        public string? Password;
-        public string? Role;
-        public string? MaGV;
-        public string? MaKhoa;
+        public string? Username { get; set; }
+        public string? Password { get; set; }
+        public string? Role { get; set; }
+        public string? MaGV { get; set; } 
+        public string? MaKhoa { get; set; }
     }
 }

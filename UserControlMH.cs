@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data;
+using System.Diagnostics;
 using System.Windows.Forms;
 
 namespace BTL
@@ -45,6 +46,8 @@ namespace BTL
             dataGridView.Columns["TenKhoa"].FillWeight = 20;
 
             dataGridView.SelectionChanged += DataGridView_SelectionChanged;
+            dataGridView.CurrentCellChanged += DataGridView_SelectionChanged;
+            dataGridView.RowEnter += DataGridView_SelectionChanged;
 
             // Search
             textBoxSearch.TextChanged += buttonSearch_Click;
@@ -53,23 +56,41 @@ namespace BTL
                 DataGridView_SelectionChanged(null!, EventArgs.Empty);
         }
 
-        private void DataGridView_SelectionChanged(object? s, EventArgs e)
+        private void DataGridView_SelectionChanged(object sender, EventArgs e)
         {
-            if (dataGridView.CurrentRow == null) return;
+            if (dataGridView.CurrentRow == null)
+                return;
+
             var row = ((DataRowView)dataGridView.CurrentRow.DataBoundItem).Row;
+
+            // Gán thông tin môn học lên các TextBox
             textBoxMaMH.Text = row["MaMH"].ToString();
             textBoxTenMH.Text = row["TenMH"].ToString();
             textBoxTC.Text = row["TinChi"].ToString();
-            comboBoxKhoa.SelectedValue = row["MaKhoa"];
-            // giảng viên dạy môn
-            dataGridViewGV.DataSource = _db.GetGiangVienByMon(row["MaMH"].ToString());
-            // Đổi tiêu đề cột
-            dataGridViewGV.Columns["MaGV"].HeaderText = "Mã giảng viên";
-            dataGridViewGV.Columns["TenGV"].HeaderText = "Họ và tên";
+            comboBoxKhoa.SelectedValue = row["MaKhoa"]?.ToString() ?? string.Empty;
+
+            // Lấy danh sách giảng viên theo mã môn
+            var dt = _db.GetGiangVienByMon(row["MaMH"].ToString());
+
+            // Xóa cột cũ và bind lại DataGridView giảng viên
+            dataGridViewGV.SuspendLayout();
+            dataGridViewGV.Columns.Clear();
+            dataGridViewGV.AutoGenerateColumns = true;
+            dataGridViewGV.DataSource = dt;
+            dataGridViewGV.ResumeLayout();
+            dataGridViewGV.Refresh();
+
+            // Tùy chỉnh tiêu đề cột và kích thước
+            if (dataGridViewGV.Columns.Contains("MaGV"))
+                dataGridViewGV.Columns["MaGV"].HeaderText = "Mã giảng viên";
+            if (dataGridViewGV.Columns.Contains("TenGV"))
+                dataGridViewGV.Columns["TenGV"].HeaderText = "Họ và tên";
 
             dataGridViewGV.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dataGridViewGV.Columns["MaGV"].FillWeight = 10;
-            dataGridViewGV.Columns["TenGV"].FillWeight = 40;
+            if (dataGridViewGV.Columns.Contains("MaGV"))
+                dataGridViewGV.Columns["MaGV"].FillWeight = 10;
+            if (dataGridViewGV.Columns.Contains("TenGV"))
+                dataGridViewGV.Columns["TenGV"].FillWeight = 40;
         }
 
         private void buttonSearch_Click(object? s, EventArgs e)

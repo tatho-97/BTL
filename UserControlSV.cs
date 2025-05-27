@@ -119,16 +119,14 @@ namespace BTL
             comboBoxLop.SelectedIndex = 0;
         }
 
-        private void SetEditMode(bool enable)
+        private void ToggleEdit(bool enable)
         {
-            textBoxTenSV.Enabled =
-            textBoxDiaChi.Enabled =
-            dateTimePickerNgaySinh.Enabled =
-            radioButtonNam.Enabled =
-            radioButtonNu.Enabled =
-            comboBoxLop.Enabled = enable;
+            dataGridView.Enabled = !enable;
+            textBoxTenSV.Enabled = textBoxDiaChi.Enabled = dateTimePickerNgaySinh.Enabled = radioButtonNam.Enabled = radioButtonNu.Enabled = comboBoxLop.Enabled = enable;
             // MaSV chỉ cho phép nhập khi thêm mới
             textBoxMaSV.Enabled = (_mode == Mode.Add);
+            buttonHuy.Visible = buttonXacNhan.Visible = enable;
+            buttonSua.Visible = buttonXoa.Visible = buttonThem.Visible = !enable;
         }
 
         // ==== SỰ KIỆN CÁC NÚT CRUD ====
@@ -137,7 +135,7 @@ namespace BTL
         {
             _mode = Mode.Add;
             ClearInput();
-            SetEditMode(true);
+            ToggleEdit(true);
             buttonXacNhan.Visible = buttonHuy.Visible = true;
             buttonSua.Visible = buttonXoa.Visible = false;
             buttonThem.Enabled = buttonSua.Enabled = buttonXoa.Enabled = false;
@@ -147,7 +145,7 @@ namespace BTL
         {
             if (dataGridView.CurrentRow == null) return;
             _mode = Mode.Edit;
-            SetEditMode(true);
+            ToggleEdit(true);
             buttonXacNhan.Visible = buttonHuy.Visible = true;
             buttonSua.Visible = buttonXoa.Visible = false;
             dataGridView.Enabled = false;
@@ -157,7 +155,7 @@ namespace BTL
         private void buttonHuy_Click(object? sender, EventArgs e)
         {
             _mode = Mode.View;
-            SetEditMode(false);
+            ToggleEdit(false);
             buttonXacNhan.Visible = buttonHuy.Visible = false;
             buttonSua.Visible = buttonXoa.Visible = true;
             buttonThem.Enabled = buttonSua.Enabled = buttonXoa.Enabled = true;
@@ -199,7 +197,7 @@ namespace BTL
 
             MessageBox.Show(ok ? "Lưu thành công!" : "Thao tác thất bại!");
             buttonHuy_Click(null!, EventArgs.Empty);
-            RefreshSinhVienGrid();
+            LoadGrid();
         }
 
         private void buttonXoa_Click(object? sender, EventArgs e)
@@ -210,11 +208,11 @@ namespace BTL
                 MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
             {
                 _db.Delete<SinhVien>(ma);
-                RefreshSinhVienGrid();
+                LoadGrid();
             }
         }
 
-        private void RefreshSinhVienGrid()
+        private void LoadGrid()
         {
             string filter = _viewSinhVien?.RowFilter ?? "";
             _dtSinhVien = _db.GetAll<SinhVien>();

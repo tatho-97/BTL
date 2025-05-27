@@ -37,12 +37,12 @@ namespace BTL
             _dtTK = _db.GetAll<TaiKhoan>();
             _viewTK = new DataView(_dtTK) { RowFilter = filter };
             dataGridView.DataSource = _viewTK;
-                dataGridView.Columns["Username"].HeaderText = "Tên đăng nhập";
-                dataGridView.Columns["Password"].HeaderText = "Mật khẩu";
-                dataGridView.Columns["Role"].HeaderText = "Phân quyền";
-                dataGridView.Columns["TenGV"].HeaderText = "Giảng viên";
-                dataGridView.Columns["MaGV"].Visible = false;
-                dataGridView.Columns["MaKhoa"].Visible = false;
+            dataGridView.Columns["Username"].HeaderText = "Tên đăng nhập";
+            dataGridView.Columns["Password"].HeaderText = "Mật khẩu";
+            dataGridView.Columns["Role"].HeaderText = "Phân quyền";
+            dataGridView.Columns["TenGV"].HeaderText = "Giảng viên";
+            dataGridView.Columns["MaGV"].Visible = false;
+            dataGridView.Columns["MaKhoa"].Visible = false;
 
             // Tự động co giãn cột
             dataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
@@ -81,10 +81,12 @@ namespace BTL
         private void buttonDMK_Click(object? sender, EventArgs e)
         {
             if (dataGridView.CurrentRow == null) return;
+
+            // Chuyển chế độ đổi mật khẩu
             _mode = Mode.ChangePass;
-            textBox2.Enabled = true;         // chỉ cho sửa Password
-            buttonXN.Visible = buttonHuy.Visible = true;
-            buttonThem.Enabled = buttonXoa.Enabled = buttonDMK.Enabled = false;
+
+            // 1) Dùng ToggleEdit để tắt grid, bật confirm/hủy, ẩn các nút thêm/xóa/đổi mật khẩu
+            ToggleEdit(true);
         }
 
         private void buttonHuy_Click(object? sender, EventArgs e)
@@ -95,36 +97,6 @@ namespace BTL
             buttonThem.Enabled = buttonXoa.Enabled = buttonDMK.Enabled = true;
             if (dataGridView.Rows.Count > 0)
                 DataGridView_SelectionChanged(null!, EventArgs.Empty);
-        }
-
-        private void buttonXN_Click(object? sender, EventArgs e)
-        {
-            bool ok = false;
-            if (_mode == Mode.Add)
-            {
-                if (_db.Exist<TaiKhoan>(textBox1.Text))
-                {
-                    MessageBox.Show("Username đã tồn tại!");
-                    return;
-                }
-                var tk = new TaiKhoan
-                {
-                    Username = textBox1.Text.Trim(),
-                    Password = textBox2.Text.Trim(),
-                    Role = textBox3.Text.Trim(),
-                    MaGV = null,
-                    MaKhoa = null
-                };
-                ok = _db.Insert<TaiKhoan>(tk);
-            }
-            else if (_mode == Mode.ChangePass)
-            {
-                ok = _db.UpdatePassword(textBox1.Text.Trim(), textBox2.Text.Trim());
-            }
-
-            MessageBox.Show(ok ? "Thành công" : "Không thành công");
-            buttonHuy_Click(null!, EventArgs.Empty);
-            LoadGrid();
         }
 
         private void buttonXoa_Click(object? sender, EventArgs e)
@@ -147,8 +119,11 @@ namespace BTL
             textBox2.Enabled = enable;
             textBox3.Enabled = (_mode == Mode.Add);
             comboBoxGV.Enabled = (_mode == Mode.Add);
-            buttonXN.Visible = buttonHuy.Visible = enable;
-            buttonThem.Visible = buttonXoa.Visible = buttonDMK.Visible = !enable;
+            buttonXN.Visible = enable;
+            buttonHuy.Visible = enable;
+            buttonThem.Visible = !enable;
+            buttonXoa.Visible = !enable;
+            buttonDMK.Visible = !enable;
         }
 
         private void ClearInput()
@@ -156,6 +131,36 @@ namespace BTL
             textBox1.Clear();
             textBox2.Clear();
             textBox3.Clear();
+        }
+
+        private void buttonXN_Click(object sender, EventArgs e)
+        {
+            bool ok = false;
+            if (_mode == Mode.Add)
+            {
+                if (_db.Exist<TaiKhoan>(textBox1.Text))
+                {
+                    MessageBox.Show("Username đã tồn tại!");
+                    return;
+                }
+                var tk = new TaiKhoan
+                {
+                    Username = textBox1.Text.Trim(),
+                    Password = textBox2.Text.Trim(),
+                    Role = textBox3.Text.Trim(),
+                    MaGV = comboBoxGV.SelectedValue?.ToString(),
+                    MaKhoa = null
+                };
+                ok = _db.Insert<TaiKhoan>(tk);
+            }
+            else if (_mode == Mode.ChangePass)
+            {
+                ok = _db.UpdatePassword(textBox1.Text.Trim(), textBox2.Text.Trim());
+            }
+
+            MessageBox.Show(ok ? "Thành công" : "Không thành công");
+            buttonHuy_Click(null!, EventArgs.Empty);
+            LoadGrid();
         }
     }
 }
