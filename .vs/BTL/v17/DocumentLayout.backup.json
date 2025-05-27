@@ -7,7 +7,7 @@
       "RelativeMoniker": "D:0:0:{96F42B19-9C83-4AEE-AE72-4A0E81686AC8}|BTL.csproj|solutionrelative:usercontroldiem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{96F42B19-9C83-4AEE-AE72-4A0E81686AC8}|BTL.csproj|c:\\users\\duong\\onedrive\\anhttt59(clc)\\btl\\usercontroldiem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "AbsoluteMoniker": "D:0:0:{96F42B19-9C83-4AEE-AE72-4A0E81686AC8}|BTL.csproj|C:\\Users\\duong\\OneDrive\\ANHTTT59(CLC)\\BTL\\usercontroldiem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{96F42B19-9C83-4AEE-AE72-4A0E81686AC8}|BTL.csproj|solutionrelative:usercontroldiem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     }
   ],
@@ -36,7 +36,7 @@
               "RelativeDocumentMoniker": "UserControlDiem.cs",
               "ToolTip": "C:\\Users\\duong\\OneDrive\\ANHTTT59(CLC)\\BTL\\UserControlDiem.cs",
               "RelativeToolTip": "UserControlDiem.cs",
-              "ViewState": "AgIAAAgAAAAAAAAAAAA8wA8AAAAhAAAAAAAAAA==",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAmwA4AAAAGAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-05-27T13:03:01.322Z",
               "EditorCaption": ""
@@ -50,8 +50,7 @@
               "ToolTip": "C:\\Users\\duong\\OneDrive\\ANHTTT59(CLC)\\BTL\\UserControlDiem.cs [Design]",
               "RelativeToolTip": "UserControlDiem.cs [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-27T13:02:59.345Z",
-              "EditorCaption": " [Design]"
+              "WhenOpened": "2025-05-27T13:02:59.345Z"
             }
           ]
         }
