@@ -47,7 +47,6 @@
             dataGridView = new DataGridView();
             label2 = new Label();
             textBoxSearch = new TextBox();
-            buttonSearch = new Button();
             label4 = new Label();
             buttonThem = new Button();
             panel1 = new Panel();
@@ -258,6 +257,7 @@
             dataGridView.MultiSelect = false;
             dataGridView.Name = "dataGridView";
             dataGridView.ReadOnly = true;
+            dataGridView.RowHeadersVisible = false;
             dataGridView.RowHeadersWidth = 51;
             dataGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dataGridView.Size = new Size(1024, 330);
@@ -281,16 +281,6 @@
             textBoxSearch.Name = "textBoxSearch";
             textBoxSearch.Size = new Size(230, 29);
             textBoxSearch.TabIndex = 2;
-            // 
-            // buttonSearch
-            // 
-            buttonSearch.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            buttonSearch.Location = new Point(170, 120);
-            buttonSearch.Name = "buttonSearch";
-            buttonSearch.Size = new Size(100, 30);
-            buttonSearch.TabIndex = 3;
-            buttonSearch.Text = "TÌM KIẾM";
-            buttonSearch.UseVisualStyleBackColor = true;
             // 
             // label4
             // 
@@ -318,7 +308,6 @@
             panel1.BackColor = SystemColors.ControlLightLight;
             panel1.Controls.Add(buttonThem);
             panel1.Controls.Add(label4);
-            panel1.Controls.Add(buttonSearch);
             panel1.Controls.Add(textBoxSearch);
             panel1.Controls.Add(label2);
             panel1.Controls.Add(dataGridView);
@@ -373,7 +362,6 @@
         public DataGridView dataGridView;
         private Label label2;
         private TextBox textBoxSearch;
-        private Button buttonSearch;
         private Label label4;
         private Button buttonThem;
         private Panel panel1;

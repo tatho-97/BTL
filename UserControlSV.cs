@@ -62,11 +62,11 @@ namespace BTL
             //buttonSearch.Click += ButtonSearch_Click;
             textBoxSearch.TextChanged += buttonSearch_Click;
             // Sự kiện nút CRUD
-            buttonThem.Click += buttonThem_Click;
-            buttonSua.Click += buttonSua_Click;
-            buttonXoa.Click += buttonXoa_Click;
-            buttonHuy.Click += buttonHuy_Click;
-            buttonXacNhan.Click += buttonXacNhan_Click;
+            //buttonThem.Click += buttonThem_Click;
+            //buttonSua.Click += buttonSua_Click;
+            ////buttonXoa.Click += buttonXoa_Click;
+            //buttonHuy.Click += buttonHuy_Click;
+            //buttonXacNhan.Click += buttonXacNhan_Click;
 
             if (dataGridView.Rows.Count > 0)
                 DataGridView_SelectionChanged(null!, EventArgs.Empty);
@@ -166,7 +166,6 @@ namespace BTL
 
         private void buttonXacNhan_Click(object? sender, EventArgs e)
         {
-            // Gom dữ liệu từ form
             var sv = new SinhVien
             {
                 MaSV = textBoxMaSV.Text.Trim(),
@@ -180,13 +179,13 @@ namespace BTL
             bool ok = false;
             if (_mode == Mode.Add)
             {
-                if (_db.Exist<SinhVien>(sv.MaSV))
+                if (_db.Exist<SinhVien>(sv.MaSV) || String.IsNullOrEmpty(textBoxMaSV.Text))
                 {
                     MessageBox.Show("Mã sinh viên đã tồn tại, hãy nhập mã khác!",
                                     "Trùng khóa chính", MessageBoxButtons.OK,
                                     MessageBoxIcon.Warning);
                     textBoxMaSV.Focus();
-                    return;  // Dừng thêm mới
+                    return;
                 }
                 ok = _db.Insert<SinhVien>(sv);
             }
@@ -194,7 +193,6 @@ namespace BTL
             {
                 ok = _db.Update<SinhVien>(sv);
             }
-
             MessageBox.Show(ok ? "Lưu thành công!" : "Thao tác thất bại!");
             buttonHuy_Click(null!, EventArgs.Empty);
             LoadGrid();

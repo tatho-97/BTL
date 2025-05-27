@@ -50,12 +50,13 @@
             // 
             // buttonLogin
             // 
-            buttonLogin.Location = new Point(650, 188);
+            buttonLogin.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            buttonLogin.Location = new Point(623, 188);
             buttonLogin.Margin = new Padding(4);
             buttonLogin.Name = "buttonLogin";
-            buttonLogin.Size = new Size(96, 32);
+            buttonLogin.Size = new Size(123, 32);
             buttonLogin.TabIndex = 1;
-            buttonLogin.Text = "LOGIN";
+            buttonLogin.Text = "ĐĂNG NHẬP";
             buttonLogin.UseVisualStyleBackColor = true;
             buttonLogin.Click += buttonLogin_Click;
             // 
@@ -103,7 +104,7 @@
             tableLayoutPanel1.Controls.Add(textBoxPassword, 1, 1);
             tableLayoutPanel1.Controls.Add(label1, 0, 0);
             tableLayoutPanel1.Controls.Add(label2, 0, 1);
-            tableLayoutPanel1.Location = new Point(387, 81);
+            tableLayoutPanel1.Location = new Point(380, 80);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
             tableLayoutPanel1.RowCount = 2;
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));

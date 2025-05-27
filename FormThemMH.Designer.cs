@@ -77,6 +77,7 @@
             // comboBoxMH
             // 
             comboBoxMH.Dock = DockStyle.Fill;
+            comboBoxMH.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBoxMH.FormattingEnabled = true;
             comboBoxMH.Location = new Point(140, 3);
             comboBoxMH.Name = "comboBoxMH";
@@ -86,6 +87,7 @@
             // comboBoxGV
             // 
             comboBoxGV.Dock = DockStyle.Fill;
+            comboBoxGV.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBoxGV.FormattingEnabled = true;
             comboBoxGV.Location = new Point(140, 71);
             comboBoxGV.Name = "comboBoxGV";
@@ -101,7 +103,6 @@
             buttonXacNhan.TabIndex = 4;
             buttonXacNhan.Text = "XÁC NHẬN";
             buttonXacNhan.UseVisualStyleBackColor = true;
-            buttonXacNhan.Visible = false;
             // 
             // FormThemMH
             // 

@@ -193,11 +193,10 @@ namespace BTL
             return Exec(sql, prms) > 0;
         }
 
-        public bool UpdateDiem(string maSV, string maMH,
-                       float diemCC, float diemTX, float diemThi, float diemHP)
+        public bool UpdateDiem(Diem diem)
         {
             const string sql = @"UPDATE Diem SET DiemCC = @cc, DiemTX = @tx, DiemThi = @thi, DiemHP = @hp WHERE MaSV = @sv AND MaMH = @mh;";
-            return Exec(sql, ("@cc", diemCC), ("@tx", diemTX), ("@thi", diemThi), ("@hp", diemHP), ("@sv", maSV), ("@mh", maMH)) > 0;
+            return Exec(sql, ("@cc", diem.DiemCC), ("@tx", diem.DiemTX), ("@thi", diem.DiemTHI), ("@hp", diem.DiemHP), ("@sv", diem.MaSV), ("@mh", diem.MaMH)) > 0;
         }
 
         /// <summary>Xóa bản ghi đối tượng T theo khóa chính.</summary>
@@ -339,14 +338,17 @@ namespace BTL
         /// </summary>
         public DataTable GetLopByGiangVien(string maGV)
         {
-            const string sql = @"SELECT DISTINCT l.MaLop, l.TenLop
-                                 FROM   GiangDay gd
-                                 JOIN   Lop l ON l.MaLop = gd.MaLop
-                                 WHERE  gd.MaGV = @gv
-                                 ORDER  BY l.MaLop;
-    ";
-            return GetDataTable(sql, ("@gv", maGV));
+            const string sql = @"
+        SELECT gd.MaLop,
+               l.TenLop,
+               gd.MaMH
+        FROM   GiangDay gd
+        JOIN   Lop      l ON l.MaLop  = gd.MaLop
+        WHERE  gd.MaGV  = @gv;";
+            return GetDataTable(sql,
+                                ("@gv", maGV));
         }
+
 
         public DataTable GetSinhVienByLop(string maLop)
         {

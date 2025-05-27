@@ -23,10 +23,7 @@ namespace BTL
             // --- danh sách môn CHƯA được dạy trong lớp
             comboBoxMH.DisplayMember = "TenMH";
             comboBoxMH.ValueMember = "MaMH";
-            comboBoxMH.DataSource = db.GetDataTable(
-                @"SELECT MaMH, TenMH FROM MonHoc
-                  WHERE MaMH NOT IN (SELECT MaMH FROM GiangDay WHERE MaLop=@lop);",
-                ("@lop", maLop));
+            comboBoxMH.DataSource = db.GetDataTable(@"SELECT MaMH, TenMH FROM MonHoc WHERE MaMH NOT IN (SELECT MaMH FROM GiangDay WHERE MaLop=@lop);", ("@lop", maLop));
 
             // Khi chọn môn ⇒ nạp giảng viên dạy môn đó
             comboBoxMH.SelectedIndexChanged += (_, __) => LoadGV();
@@ -47,20 +44,17 @@ namespace BTL
         {
             if (comboBoxMH.SelectedValue == null || comboBoxGV.SelectedValue == null) return;
 
-            bool ok = _db.InsertGiangDay(
-                _maLop,
-                comboBoxMH.SelectedValue.ToString(),
-                comboBoxGV.SelectedValue.ToString());
+            bool ok = _db.InsertGiangDay(_maLop, comboBoxMH.SelectedValue.ToString(), comboBoxGV.SelectedValue.ToString());
 
             if (ok)
             {
                 DialogResult = DialogResult.OK;
-                Close();
             }
             else
             {
                 MessageBox.Show("Thêm thất bại!");
             }
+            Close();
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace BTL
 {
@@ -10,10 +11,6 @@ namespace BTL
         private readonly Database _db = new();
         private DataTable _dtSV = new();
         private DataView _viewSV;
-        private bool _binding = false;
-        private bool _inEdit = false;
-        private enum Mode { View, Edit }
-        private Mode _mode = Mode.View;
 
         // Sẽ nhận vào Mã GV từ Form cha (giảng viên đang đăng nhập)
         public string _maGV = "";
@@ -61,7 +58,7 @@ namespace BTL
 
         private void Diem_Leave(object? sender, EventArgs e)
         {
-            var tb = (TextBox)sender!;
+            var tb = (System.Windows.Forms.TextBox) sender!;
             if (float.TryParse(tb.Text, out var v))
                 tb.Text = Round05(v).ToString("0.0");
         }
@@ -69,7 +66,7 @@ namespace BTL
         private void OnlyNumber_KeyPress(object? sender, KeyPressEventArgs e)
         {
             if (char.IsControl(e.KeyChar)) return;
-            var tb = (TextBox)sender!;
+            var tb = (System.Windows.Forms.TextBox) sender!;
             if (char.IsDigit(e.KeyChar)) return;
             if (e.KeyChar == '.' && !tb.Text.Contains('.')) return;
             e.Handled = true;
@@ -80,34 +77,50 @@ namespace BTL
             if (comboBoxLop.SelectedValue == null) return;
             string maLop = comboBoxLop.SelectedValue.ToString();
             string maMH = _lop_maMH[maLop];
-            // Lấy danh sách sinh viên của lớp, kèm điểm môn đó (nếu có)
             _dtSV = _db.GetSV_Diem_ByLop(maLop, maMH);
             _viewSV = _dtSV.DefaultView;
             dataGridView.DataSource = _viewSV;
+            dataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+
+            dataGridView.Columns["MaSV"].HeaderText = "Mã SV";
+            dataGridView.Columns["MaSV"].FillWeight = 10; // 10% width
+            dataGridView.Columns["TenSV"].HeaderText = "Họ và Tên";
+            dataGridView.Columns["TenSV"].FillWeight = 25; // 25% width
+            dataGridView.Columns["DiaChi"].HeaderText = "Địa chỉ";
+            dataGridView.Columns["DiaChi"].FillWeight = 25; // 25% width
+            dataGridView.Columns["NgaySinh"].HeaderText = "Ngày Sinh";
+            dataGridView.Columns["NgaySinh"].FillWeight = 10; // 10% width
+            dataGridView.Columns["NgaySinh"].DefaultCellStyle.Format = "dd/MM/yyyy";
+            dataGridView.Columns["GioiTinh"].HeaderText = "Giới Tính";
+            dataGridView.Columns["GioiTinh"].FillWeight = 10; // 10% width
+            dataGridView.Columns["DiemCC"].HeaderText = "Điểm CC";
+            dataGridView.Columns["DiemCC"].FillWeight = 5; // 5% width
+            dataGridView.Columns["DiemTX"].HeaderText = "Điểm TX";
+            dataGridView.Columns["DiemTX"].FillWeight = 5; // 5% width
+            dataGridView.Columns["DiemTHI"].HeaderText = "Điểm Thi";
+            dataGridView.Columns["DiemTHI"].FillWeight = 5; // 5% width
+            dataGridView.Columns["DiemHP"].HeaderText = "Điểm HP";
+            dataGridView.Columns["DiemHP"].FillWeight = 5; // 5% width
+
             if (dataGridView.Rows.Count > 0)
                 dataGridView_SelectionChanged(null!, EventArgs.Empty);
         }
 
         private void dataGridView_SelectionChanged(object? sender, EventArgs e)
         {
-            if (_inEdit || _binding || dataGridView.CurrentRow == null) return;
-            _binding = true;
+            if (dataGridView.CurrentRow == null) return;
             var r = ((DataRowView)dataGridView.CurrentRow.DataBoundItem).Row;
-            // Thông tin sinh viên
             textBoxMaSV.Text = r["MaSV"].ToString();
             textBoxTenSV.Text = r["TenSV"].ToString();
             textBoxDiaChi.Text = r["DiaChi"].ToString();
-            dateTimePickerNgaySinh.Value =
-                DateTime.TryParse(r["NgaySinh"].ToString(), out var d) ? d : DateTime.Today;
+            dateTimePickerNgaySinh.Value = DateTime.TryParse(r["NgaySinh"].ToString(), out var d) ? d : DateTime.Today;
             var gt = r["GioiTinh"].ToString().Trim().ToLower();
             radioButtonNam.Checked = gt == "nam";
             radioButtonNu.Checked = !radioButtonNam.Checked;
-            // Điểm (có thể null)
             textBoxDiemCC.Text = r["DiemCC"]?.ToString();
             textBoxDiemTX.Text = r["DiemTX"]?.ToString();
             textBoxDiemTHI.Text = r["DiemTHI"]?.ToString();
             textBoxDiemHP.Text = r["DiemHP"]?.ToString();
-            _binding = false;
         }
 
         private void buttonSearch_Click(object? sender, EventArgs e)
@@ -120,79 +133,74 @@ namespace BTL
 
         private void ToggleEdit(bool enable)
         {
-            // Chỉ bật 3 ô điểm CC, TX, THI (điểm HP tự tính, không cho sửa)
             textBoxDiemCC.Enabled = textBoxDiemTX.Enabled = textBoxDiemTHI.Enabled = enable;
             dataGridView.Enabled = !enable;
+            buttonHuy.Visible = buttonXacNhan.Visible = enable;
+            buttonSua.Visible = !enable;
         }
 
         private void buttonSua_Click(object? sender, EventArgs e)
         {
             if (dataGridView.CurrentRow == null) return;
-            _inEdit = true;
-            _mode = Mode.Edit;
-            // Bật các TextBox để nhập điểm
             ToggleEdit(true);
-            // Hiện nút Xác nhận, Hủy; Ẩn nút Sửa
-            buttonXacNhan.Visible = true;
-            buttonHuy.Visible = true;
-            buttonSua.Visible = false;
         }
 
         private void buttonHuy_Click(object? sender, EventArgs e)
         {
-            _inEdit = false;
-            _mode = Mode.View;
-            // Khóa lại các TextBox điểm
             ToggleEdit(false);
-            // Ẩn nút Xác nhận, Hủy; Hiện nút Sửa
-            buttonXacNhan.Visible = false;
-            buttonHuy.Visible = false;
-            buttonSua.Visible = true;
-            // Reload lại dữ liệu từ DataGridView
             dataGridView_SelectionChanged(null!, EventArgs.Empty);
         }
 
-        // Xử lý nút Xác nhận: lưu/sửa điểm
-        private void buttonXacNhan_Click(object? sender, EventArgs e)
+        private void buttonXacNhan_Click(object sender, EventArgs e)
         {
-            // 1. Lấy và parse từng ô điểm
-            bool okCC = float.TryParse(textBoxDiemCC.Text, out var cc);
-            bool okTX = float.TryParse(textBoxDiemTX.Text, out var tx);
-            bool okTHI = float.TryParse(textBoxDiemTHI.Text, out var thi);
-            // 2. Làm tròn từng giá trị nếu hợp lệ
-            if (okCC) cc = Round05(cc);
-            if (okTX) tx = Round05(tx);
-            if (okTHI) thi = Round05(thi);
-            // 3. Nếu thiếu bất kỳ điểm nào → không lưu, chỉ tính/xóa điểm HP
-            if (!(okCC && okTX && okTHI))
+            // 1. Lấy MaSV, MaMH...
+            var maSV = textBoxMaSV.Text.Trim();
+            var maMH = _lop_maMH[comboBoxLop.SelectedValue.ToString()];
+
+            // 2. Parse các điểm với TryParse
+            if (!float.TryParse(textBoxDiemCC.Text, out float diemCC) ||
+                !float.TryParse(textBoxDiemTX.Text, out float diemTX) ||
+                !float.TryParse(textBoxDiemTHI.Text, out float diemTHI))
             {
-                // Xóa điểm HP hiển thị
-                textBoxDiemHP.Text = string.Empty;
-                // Thông báo
-                MessageBox.Show("Chưa nhập đủ CC, TX và THI — không lưu điểm.");
-                return;
+                MessageBox.Show(
+                    "Vui lòng nhập số hợp lệ cho tất cả các ô điểm.",
+                    "Lỗi định dạng",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return; // dừng lại, không lưu
             }
-            // 4. Tính & làm tròn điểm HP
-            float hp = (float)Math.Round(0.1f * cc + 0.2f * tx + 0.7f * thi,
-                                         1, MidpointRounding.AwayFromZero);
-            textBoxDiemHP.Text = hp.ToString("0.0");
-            // 5. Tiến hành lưu vào DB
+
+            // 3. Tính toán Điểm HP
+            float diemHP = (float)Math.Round((diemCC * 0.1f) + (diemTX * 0.3f) + (diemTHI * 0.6f), 1); // Làm tròn đến 1 chữ số thập phân
+            textBoxDiemHP.Text = diemHP.ToString("0.0");
+
+            // 4. Tạo đối tượng Diem
             var d = new Diem
             {
-                MaSV = textBoxMaSV.Text,
-                MaMH = _lop_maMH[comboBoxLop.SelectedValue.ToString()],
-                DiemCC = cc,
-                DiemTX = tx,
-                DiemTHI = thi,
-                DiemHP = hp
+                MaSV = maSV,
+                MaMH = maMH,
+                DiemCC = diemCC,
+                DiemTX = diemTX,
+                DiemTHI = diemTHI,
+                DiemHP = diemHP
             };
-            bool ok = _db.UpdateDiem(textBoxMaSV.Text.Trim(),
-                    _lop_maMH[comboBoxLop.SelectedValue.ToString()],
-                    cc, tx, thi, hp);
-            MessageBox.Show(ok ? "Lưu điểm thành công!" : "Lỗi khi lưu điểm.");
-            // 6. Quay về chế độ View & reload
-            buttonHuy_Click(this, EventArgs.Empty);
+
+            // 5. Upsert như trước
+            bool existed = _db.Exist<Diem>(d.MaSV, d.MaMH);
+            bool ok = existed
+                           ? _db.UpdateDiem(d)
+                           : _db.Insert<Diem>(d);
+
+            // 6. Thông báo kết quả
+            MessageBox.Show(
+                ok ? "Lưu điểm thành công!" : "Lỗi khi lưu điểm.",
+                "Thông báo",
+                MessageBoxButtons.OK,
+                ok ? MessageBoxIcon.Information : MessageBoxIcon.Error);
+
+            // 7. Reload và tắt edit mode
             comboBoxLop_SelectedIndexChanged(this, EventArgs.Empty);
+            ToggleEdit(false);
         }
     }
 }

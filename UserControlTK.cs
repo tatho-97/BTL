@@ -99,17 +99,44 @@ namespace BTL
                 DataGridView_SelectionChanged(null!, EventArgs.Empty);
         }
 
-        private void buttonXoa_Click(object? sender, EventArgs e)
+        private void ButtonXoa_Click(object? s, EventArgs e)
         {
             if (dataGridView.CurrentRow == null) return;
-            string user = textBox1.Text;
-            if (MessageBox.Show($"Xoá tài khoản {user}?", "Xác nhận",
-                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+
+            // 1. Lấy username (trim khoảng trắng)
+            string user = textBox1.Text.Trim();
+
+            // 2. Hỏi xác nhận
+            if (MessageBox.Show($"Xoá tài khoản \"{user}\"?",
+                                "Xác nhận",
+                                MessageBoxButtons.YesNo,
+                                MessageBoxIcon.Warning)
+                != DialogResult.Yes)
             {
-                _db.Delete<TaiKhoan>(user);
-                LoadGrid();
+                return;
             }
+
+            // 3. Gọi generic Delete<TaiKhoan> và bắt kết quả
+            bool ok = _db.Delete<TaiKhoan>(user);
+
+            // 4. Thông báo kết quả và load lại grid
+            if (ok)
+            {
+                MessageBox.Show("Xóa tài khoản thành công!",
+                                "Thành công",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Information);
+            }
+            else
+            {
+                MessageBox.Show("Không xóa được tài khoản. Vui lòng kiểm tra lại.",
+                                "Lỗi",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
+            }
+            LoadGrid();
         }
+
 
         // ----------------------- helper ---------------------------
         private void ToggleEdit(bool enable)

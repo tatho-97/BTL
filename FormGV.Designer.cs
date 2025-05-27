@@ -43,7 +43,7 @@
             // 
             // panelMenu
             // 
-            panelMenu.BackColor = SystemColors.ActiveCaption;
+            panelMenu.BackColor = SystemColors.Highlight;
             panelMenu.Controls.Add(buttonDX);
             panelMenu.Controls.Add(pictureBoxLogo);
             panelMenu.Controls.Add(tableLayoutPanelMenu);
@@ -57,10 +57,13 @@
             // buttonDX
             // 
             buttonDX.Dock = DockStyle.Bottom;
+            buttonDX.FlatAppearance.BorderSize = 0;
+            buttonDX.FlatStyle = FlatStyle.Flat;
             buttonDX.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            buttonDX.Location = new Point(0, 815);
+            buttonDX.ForeColor = SystemColors.ControlText;
+            buttonDX.Location = new Point(0, 811);
             buttonDX.Name = "buttonDX";
-            buttonDX.Size = new Size(200, 46);
+            buttonDX.Size = new Size(200, 50);
             buttonDX.TabIndex = 2;
             buttonDX.Text = "ĐĂNG XUẤT";
             buttonDX.UseVisualStyleBackColor = true;
@@ -129,6 +132,7 @@
             // 
             // panelContent
             // 
+            panelContent.BackColor = SystemColors.ButtonHighlight;
             panelContent.Dock = DockStyle.Fill;
             panelContent.Location = new Point(200, 0);
             panelContent.Name = "panelContent";
@@ -144,7 +148,9 @@
             Controls.Add(panelMenu);
             Font = new Font("Segoe UI", 12F);
             Margin = new Padding(4);
+            MaximizeBox = false;
             Name = "FormGV";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "FormGV";
             panelMenu.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)pictureBoxLogo).EndInit();

@@ -128,6 +128,7 @@
             dataGridView.MultiSelect = false;
             dataGridView.Name = "dataGridView";
             dataGridView.ReadOnly = true;
+            dataGridView.RowHeadersVisible = false;
             dataGridView.RowHeadersWidth = 51;
             dataGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dataGridView.Size = new Size(1024, 330);
@@ -154,6 +155,7 @@
             dataGridViewGV.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridViewGV.Location = new Point(525, 58);
             dataGridViewGV.Name = "dataGridViewGV";
+            dataGridViewGV.RowHeadersVisible = false;
             dataGridViewGV.Size = new Size(799, 298);
             dataGridViewGV.TabIndex = 8;
             // 

@@ -77,7 +77,7 @@
             buttonXoa.TabIndex = 7;
             buttonXoa.Text = "XÓA";
             buttonXoa.UseVisualStyleBackColor = true;
-            buttonXoa.Click += buttonXN_Click;
+            buttonXoa.Click += ButtonXoa_Click;
             // 
             // buttonThem
             // 
@@ -128,6 +128,7 @@
             dataGridView.MultiSelect = false;
             dataGridView.Name = "dataGridView";
             dataGridView.ReadOnly = true;
+            dataGridView.RowHeadersVisible = false;
             dataGridView.RowHeadersWidth = 51;
             dataGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dataGridView.Size = new Size(1024, 330);

@@ -16,15 +16,14 @@ namespace BTL
         public string MaLop { get; set; }
     }
 
-
     public class Diem
     {
-        public string? MaSV;
-        public string? MaMH;
-        public float DiemCC;
-        public float DiemTX;
-        public float DiemTHI;
-        public float DiemHP;
+        public string MaSV { get; set; }
+        public string MaMH { get; set; }
+        public float DiemCC { get; set; }
+        public float DiemTX { get; set; }
+        public float DiemTHI { get; set; }
+        public float DiemHP { get; set; }
     }
 
     public class Lop
